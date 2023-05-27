@@ -6,6 +6,8 @@ let whitePieces = [];
 let blackPieces = [];
 let allowedSquares = [];
 let selectedPiece = null;
+let playerColor = null;
+let opponentColor = null;
 const WHITE = true;
 const BLACK = false;
 let colNumber = 0;
@@ -23,11 +25,35 @@ $('table tbody td').each((i,elm)=>{
         $(elm).addClass('piece-container');
     }
 
-    $(elm).droppable({
-        disabled:true,
-        drop: (eventData)=> movePiece($(eventData.target)),
-    })
-})
+});
+
+$('tbody').on('mousedown','span',(eventData)=>{
+    eventData.stopPropagation();
+
+    if($(eventData.target).parent().hasClass('attack')){
+        movePiece($(eventData.target).parent());
+        return;
+    }
+    if(selectedPiece) clearSelections();
+    selectedPiece = $(eventData.target);
+    playerColor = selectedPiece.attr('data-color');
+    opponentColor = (playerColor === 'white')? 'black': 'white';
+    findAllowedSquares(selectedPiece);
+});
+
+$('tbody').on('drop','td',(eventData)=>{
+    movePiece($(eventData.target));
+});
+
+$('tbody').on('mousedown','td',(eventData)=>{
+    if($(eventData.target).hasClass('allowable-squares')){
+        movePiece($(eventData.target));
+    };
+});
+
+
+
+
 
 
 //initializing piece <span> with data-attributes and black whith classes
@@ -66,8 +92,6 @@ $('table tbody td > span').each((i,elm)=>{
     }else{
         blackPieces.push(element);
     }
-
-    element.on('mousedown',(eventData)=>findAllowedSquares($(eventData.target)));
 })
 
 // initially it's white's turn. ture for white.
@@ -93,7 +117,6 @@ function activatePieceContainers(isWhite){
 }
 
 function findAllowedSquares(piece){
-    selectedPiece = piece;
     rowNumber = +piece.parent().attr('data-row-no');
     colNumber = +piece.parent().attr('data-col-no');
     let pieceType = piece.attr('data-piece');
@@ -110,12 +133,8 @@ function findAllowedSquares(piece){
 
 function findPawnMoves(piece, colNumber, rowNumber){
 
-    let pieceColor = piece.attr('data-color');
-    let opponentColor = (pieceColor === 'white')? 'black': 'white';
-    let increament = (pieceColor === 'white')? 1:-1;
+    let increament = (playerColor === 'white')? 1:-1;
 
-    console.log(opponentColor);
-    
     for(let i = 1; i < 3 ; i ++){
         let targetSqure = $(`.row-${rowNumber+increament*i} .col-${colNumber}`);
         if(targetSqure.hasClass('piece-container')) break;
@@ -137,13 +156,11 @@ function findPawnMoves(piece, colNumber, rowNumber){
 }
 
 function findRookMoves(piece, colNumber, rowNumber, forwardToBishop){
-    console.log("rook is moving");
-    let pieceColor = piece.attr('data-color');
-    let opponentColor = (pieceColor === 'white')? 'black': 'white';
+    
 
     let i = 1;
     while((colNumber + i) <= 8 && !$(`.row-${rowNumber} .col-${colNumber+i}`)
-    .children('span').hasClass(pieceColor)){
+    .children('span').hasClass(playerColor)){
         let targetSqure = $(`.row-${rowNumber} .col-${colNumber+i}`);
         if(!pushAndDecideToContinue(targetSqure, opponentColor)) break;
         i++;
@@ -151,7 +168,7 @@ function findRookMoves(piece, colNumber, rowNumber, forwardToBishop){
 
     i=1;
     while((colNumber - i) >= 1 && !$(`.row-${rowNumber} .col-${colNumber-i}`)
-    .children('span').hasClass(pieceColor)){
+    .children('span').hasClass(playerColor)){
         let targetSqure = $(`.row-${rowNumber} .col-${colNumber-i}`);
         if(!pushAndDecideToContinue(targetSqure, opponentColor)) break;
         i++;
@@ -159,36 +176,31 @@ function findRookMoves(piece, colNumber, rowNumber, forwardToBishop){
 
     i=1;
     while((rowNumber + i) <= 8 && !$(`.row-${rowNumber+i} .col-${colNumber}`)
-    .children('span').hasClass(pieceColor)){
+    .children('span').hasClass(playerColor)){
         let targetSqure = $(`.row-${rowNumber+i} .col-${colNumber}`);
         if(!pushAndDecideToContinue(targetSqure, opponentColor)) break;
         i++;
     }
 
     i=1;
-    console.log(rowNumber, colNumber)
 
     while((rowNumber - i) >= 1 && !$(`.row-${rowNumber-i} .col-${colNumber}`)
-    .children('span').hasClass(pieceColor)){
+    .children('span').hasClass(playerColor)){
         let targetSqure = $(`.row-${rowNumber-i} .col-${colNumber}`);
         if(!pushAndDecideToContinue(targetSqure, opponentColor)) break;
         i++;
     }
     
     if(forwardToBishop){
-        console.log("fowarding to bishop from rook");
         findBishopMoves(piece, colNumber, rowNumber);
     }else{
-        console.log("marking ");
         markAllowedSquares();
     }
 }
 
 function pushAndDecideToContinue(targetSquare ,opponentColor){
-    console.log("pushed the square and deciding to continue");
     allowedSquares.push(targetSquare); 
     if(targetSquare.children('span').hasClass(opponentColor)){
-        console.log("found a opponent");
         return false;
     }else{
         return true;
@@ -196,9 +208,7 @@ function pushAndDecideToContinue(targetSquare ,opponentColor){
 }
 
 function findKnightMoves(piece, colNumber, rowNumber){
-    console.log("knight is moving");
-    let pieceColor = piece.attr('data-color');
-    let opponentColor = (pieceColor === 'white')? 'black': 'white';
+    
 
     let tempSquareArray = [];
 
@@ -207,20 +217,17 @@ function findKnightMoves(piece, colNumber, rowNumber){
     });
 
     allowedSquares = tempSquareArray.filter( elem=> elem[0]);
-    allowedSquares =allowedSquares.filter( elem=> !elem.children('span').hasClass(pieceColor));
-    console.log(allowedSquares);
+    allowedSquares =allowedSquares.filter( elem=> !elem.children('span').hasClass(playerColor));
     markAllowedSquares();
 
 }
 
 function findBishopMoves(piece, colNumber, rowNumber){
-    console.log('bishop moves');
-    let pieceColor = piece.attr('data-color');
-    let opponentColor = (pieceColor === 'white')? 'black': 'white';
+    
     let i = 1;
     
     while((colNumber + i) <= 8 && (rowNumber + i) <=8 && !$(`.row-${rowNumber+i} .col-${colNumber+i}`)
-    .children('span').hasClass(pieceColor)){
+    .children('span').hasClass(playerColor)){
         let targetSqure = $(`.row-${rowNumber+i} .col-${colNumber+i}`);
         if(!pushAndDecideToContinue(targetSqure, opponentColor)) break;
         i++
@@ -228,7 +235,7 @@ function findBishopMoves(piece, colNumber, rowNumber){
 
     i = 1;
     while(((colNumber - i) >= 1) && ((rowNumber - i) >=1) && !$(`.row-${rowNumber-i} .col-${colNumber-i}`)
-    .children('span').hasClass(pieceColor)){
+    .children('span').hasClass(playerColor)){
         let targetSqure = $(`.row-${rowNumber-i} .col-${colNumber-i}`);
         if(!pushAndDecideToContinue(targetSqure, opponentColor)) break;
         i++;
@@ -237,7 +244,7 @@ function findBishopMoves(piece, colNumber, rowNumber){
     
     i = 1;
     while((colNumber + i) <= 8 && (rowNumber - i) >=1 && !$(`.row-${rowNumber-i} .col-${colNumber+i}`)
-    .children('span').hasClass(pieceColor)){
+    .children('span').hasClass(playerColor)){
         let targetSqure = $(`.row-${rowNumber-i} .col-${colNumber+i}`);
         if(!pushAndDecideToContinue(targetSqure, opponentColor)) break;
         i++;
@@ -245,15 +252,12 @@ function findBishopMoves(piece, colNumber, rowNumber){
 
     i = 1;
     while(((colNumber - i) >=1) && ((rowNumber + i) <=8) && !$(`.row-${rowNumber+i} .col-${colNumber-i}`)
-    .children('span').hasClass(pieceColor)){
-        console.log(colNumber - i,rowNumber + i);
+    .children('span').hasClass(playerColor)){
         let targetSqure = $(`.row-${rowNumber+i} .col-${colNumber-i}`);
         if(!pushAndDecideToContinue(targetSqure, opponentColor)) break;
 
         i++;
-    }
-
-    console.log(allowedSquares);    
+    }  
     markAllowedSquares();
 }
 
@@ -287,7 +291,6 @@ function movePiece(square){
     }
     square.empty();
     selectedPiece.parent().removeClass('selectable-piece-container');
-    // selectedPiece.remove();
     selectedPiece.css('top','0');
     selectedPiece.css('left','0');
     square.append(selectedPiece);
@@ -297,11 +300,19 @@ function movePiece(square){
         disabled: false,
     });
 
-    allowedSquares.forEach((square)=>{
-        square.removeClass('allowable-squares piece-container ui-droppable attack');
-    })
+    clearSelections();
+}
 
+function clearSelections(){
+    allowedSquares.forEach((square)=>{
+        square.removeClass('allowable-squares piece-container ui-droppable ui-droppable-handle attack');
+        square.droppable({disabled:true})
+    })
+    selectedPiece = null;
+    playerColor = null;
+    opponentColor =null;
     allowedSquares.splice(0, allowedSquares.length);
+    
 }
 
 

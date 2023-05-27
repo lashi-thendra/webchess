@@ -40,7 +40,7 @@ $('table tbody td > span').each((i,elm)=>{
     let rowNumber = element.parent().attr('data-row-no');
     if(rowNumber === '2' || rowNumber == '7'){
         element.attr('data-piece','pawn');
-        element.attr('data-first-move','true');
+        element.attr('data-first-move','1');
     }else{
         let j = i%8;
         if(j === 0 || j === 7){
@@ -114,15 +114,14 @@ function findPawnMoves(piece, colNumber, rowNumber){
     let opponentColor = (pieceColor === 'white')? 'black': 'white';
     let increament = (pieceColor === 'white')? 1:-1;
     
-    let targetSqure = $(`.row-${rowNumber+increament} .col-${colNumber}`);
-    if(!targetSqure.hasClass('piece-container')){
+    console.log("fintind pawn moves");
+    for(let i = 1; i < 3 ; i ++){
+        console.log(i);
+        let targetSqure = $(`.row-${rowNumber+increament*i} .col-${colNumber}`);
+        if(targetSqure.hasClass('piece-container')) break;
+        if(i===2 && !Number.parseInt(piece.attr('data-first-move'))) break;
         allowedSquares.push(targetSqure);
     }
-    
-    targetSqure = $(`.row-${rowNumber+increament*2} .col-${colNumber}`);
-    if(Boolean(piece.attr('data-first-move')) && !targetSqure.hasClass('piece-container')){
-            allowedSquares.push(targetSqure);
-    };
 
     targetSqure = $(`.row-${rowNumber+increament} > .col${colNumber+1}`);
     if(targetSqure.children('span').hasClass(opponentColor)){
@@ -283,6 +282,9 @@ function markAllowedSquares(){
 }
 
 function movePiece(square){
+    if(selectedPiece.attr('data-piece')==='pawn'){
+        selectedPiece.attr('data-first-move','0'); 
+    }
     square.empty();
     selectedPiece.parent().removeClass('selectable-piece-container');
     // selectedPiece.remove();
@@ -296,7 +298,7 @@ function movePiece(square){
     });
 
     allowedSquares.forEach((square)=>{
-        square.removeClass('allowable-squares ui-droppable attack');
+        square.removeClass('allowable-squares piece-container ui-droppable attack');
     })
 
     allowedSquares.splice(0, allowedSquares.length);
@@ -304,7 +306,7 @@ function movePiece(square){
 
 
 
-
+    
 
 
 

@@ -1,0 +1,47 @@
+* {
+    box-sizing: border-box;
+}
+
+body{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+table td{
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 2rem;
+    user-select: none;
+}
+
+.selectable-piece-container:hover{
+    background-color: #97ff7d;
+}
+
+.piece-container{
+    border: 1px solid rgb(0, 245, 33) !important;
+}
+
+.allowable-squares{
+    background-color: rgb(17, 250, 211);
+}
+
+.select{
+    background-color: yellow;
+}
+
+.attack{
+    background-color: red;
+}
+
+/* .white{
+    background-color: rgb(159, 168, 159);
+} */
+
+/* .black{
+    background-color: rgb(51, 50, 61);
+} */
+
+

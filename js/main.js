@@ -113,22 +113,22 @@ function findPawnMoves(piece, colNumber, rowNumber){
     let pieceColor = piece.attr('data-color');
     let opponentColor = (pieceColor === 'white')? 'black': 'white';
     let increament = (pieceColor === 'white')? 1:-1;
+
+    console.log(opponentColor);
     
-    console.log("fintind pawn moves");
     for(let i = 1; i < 3 ; i ++){
-        console.log(i);
         let targetSqure = $(`.row-${rowNumber+increament*i} .col-${colNumber}`);
         if(targetSqure.hasClass('piece-container')) break;
         if(i===2 && !Number.parseInt(piece.attr('data-first-move'))) break;
         allowedSquares.push(targetSqure);
     }
 
-    targetSqure = $(`.row-${rowNumber+increament} > .col${colNumber+1}`);
+    targetSqure = $(`.row-${rowNumber+increament} > .col-${colNumber+1}`);
     if(targetSqure.children('span').hasClass(opponentColor)){
         allowedSquares.push(targetSqure);
     }
 
-    targetSqure = $(`.row-${rowNumber+increament} > .col${colNumber-1}`);
+    targetSqure = $(`.row-${rowNumber+increament} > .col-${colNumber-1}`);
     if(targetSqure.children('span').hasClass(opponentColor)){
         allowedSquares.push(targetSqure);
     }

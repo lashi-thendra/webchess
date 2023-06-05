@@ -1,3 +1,5 @@
+import { isMoveValid, checkForMateDraw } from "./state-reader.js";
+
 $('table tbody tr:last-child').remove();
 $('table tbody tr td:first-child').remove();
 $('br').parent().remove();
@@ -142,7 +144,7 @@ function findPawnMoves(piece, colNumber, rowNumber){
         allowedSquares.push(targetSqure);
     }
 
-    targetSqure = $(`.row-${rowNumber+increament} > .col-${colNumber+1}`);
+    let targetSqure = $(`.row-${rowNumber+increament} > .col-${colNumber+1}`);
     if(targetSqure.children('span').hasClass(opponentColor)){
         allowedSquares.push(targetSqure);
     }
@@ -286,6 +288,7 @@ function markAllowedSquares(){
 }
 
 function movePiece(square){
+    if(!isMoveValid(square)) return;
     if(selectedPiece.attr('data-piece')==='pawn'){
         selectedPiece.attr('data-first-move','0'); 
     }
@@ -301,6 +304,7 @@ function movePiece(square){
     });
 
     clearSelections();
+    checkForMateDraw();
 }
 
 function clearSelections(){

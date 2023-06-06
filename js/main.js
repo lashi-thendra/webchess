@@ -268,7 +268,11 @@ function findQueenMoves(piece, colNumber, rowNumber){
 }
 
 function findKingMoves(piece, colNumber, rowNumber){
-    console.log('king moves');
+    [[colNumber+1, rowNumber],[colNumber-1,rowNumber],[colNumber, rowNumber+1],[colNumber, rowNumber-1],
+[colNumber+1,rowNumber+1],[colNumber+1,rowNumber-1],[colNumber-1,rowNumber+1],[colNumber-1,rowNumber-1]].forEach(([i,j])=>{
+    allowedSquares.push($(`.row-${j} .col-${i}`));
+});
+    markAllowedSquares();
 }
 
 function markAllowedSquares(){

@@ -15,6 +15,7 @@ class Board {
     isDraw();
     isMate();
     findWinner();
+    
 
 }
 
@@ -44,7 +45,38 @@ class Piece {
 
 class Pawn extends Piece {
     isFirstMove;
-    getAttackingSquares(){
-        
+    constructor(isWhite, square, row, column){
+        super (isWhite, square, row, column, value, type)
     }
+    getAttackingSquares(){
+
+    }
+}
+
+class Rook extends Piece {
+    isFirstMove;
+    constructor(isWhite, square, row, column){
+        super (isWhite, square, row, column, value, type)
+    }
+    getAttackingSquares(){
+
+    }
+}
+
+class bishop extends Piece {
+    getAttackingSquares(){
+
+    }
+}
+
+class Knight extends Piece {
+    getAttackingSquares(){}
+}
+
+class queen extends Piece {
+    getAttackingSquares(){}
+}
+
+class King extends Piece {
+    getAttackingSquares(){}
 }

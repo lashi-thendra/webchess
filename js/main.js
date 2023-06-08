@@ -320,7 +320,6 @@ function clearSelections(){
     playerColor = null;
     opponentColor =null;
     allowedSquares.splice(0, allowedSquares.length);
-    
 }
 
 

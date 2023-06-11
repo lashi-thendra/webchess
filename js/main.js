@@ -15,6 +15,20 @@ const BLACK = false;
 let colNumber = 0;
 let rowNumber = 0;
 
+const PAWN_VALUE = 1;
+const ROOK_VALUE = 5;
+const KNIGHT_VALUE = 3;
+const BISHOP_VALUE = 3;
+const QUEEN_VALUE = 9;
+const KING_VALUE = 10000;
+
+const PAWN = 1;
+const ROOK = 2;
+const KNIGHT = 3;
+const BISHOP = 4;
+const QUEEN= 5;
+const KING = 6;
+
 // initializing piece containers <td> with row col number data attributes
 $('table tbody td').each((i,elm)=>{
 

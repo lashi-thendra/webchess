@@ -1,25 +1,18 @@
-class Board {
-    isUnderCheck;
-    squares;
+const PAWN_VALUE = 1;
+const ROOK_VALUE = 5;
+const KNIGHT_VALUE = 3;
+const BISHOP_VALUE = 3;
+const QUEEN_VALUE = 9;
+const KING_VALUE = 10000;
 
-    constructor(){
-        this.squares = new Array(8);
-        for (let index = 0; index <= 8; index++) {
-            this.squares[i] = new Array(8);
-        }
-    }
+const PAWN = 1;
+const ROOK = 2;
+const KNIGHT = 3;
+const BISHOP = 4;
+const QUEEN= 5;
+const KING = 6;
 
-    selectSquares();
-    clearSelections();
-    movePiece();
-    isDraw();
-    isMate();
-    findWinner();
-    
-
-}
-
-class Piece {
+export class Piece {
     isWhite;
     row;
     column;
@@ -34,49 +27,90 @@ class Piece {
         this.value = value;
         this.type = type;
     }
+}
+
+export class Pawn extends Piece {
+    isFirstMove;
+    constructor(isWhite, square, row, column){
+        super (isWhite, square, row, column, PAWN_VALUE, PAWN);
+    }
+    getAttackingSquares(){
+
+    }
+}
+
+export class Rook extends Piece {
+    isFirstMove;
+    constructor(isWhite, square, row, column){
+        super (isWhite, square, row, column, ROOK_VALUE, ROOK);
+    }
+    getAttackingSquares(){
+
+    }
+}
+
+export class bishop extends Piece {
+    constructor(isWhite, square, row, column){
+        super (isWhite, square, row, column, BISHOP_VALUE, BISHOP);
+    }
     
     getAttackingSquares(){
 
-    };
-    changePosition(square){
+    }
+}
+
+export class Knight extends Piece {
+    isFirstMove;
+    constructor(isWhite, square, row, column){
+        super (isWhite, square, row, column, KNIGHT_VALUE, KNIGHT);
+    }
+    getAttackingSquares(){
+
+    }
+}
+
+export class queen extends Piece {
+    constructor(isWhite, square, row, column){
+        super (isWhite, square, row, column, QUEEN_VALUE, QUEEN);
+    }
+    getAttackingSquares(){
         
-    };
+    }
 }
 
-class Pawn extends Piece {
-    isFirstMove;
+export class King extends Piece {
     constructor(isWhite, square, row, column){
-        super (isWhite, square, row, column, value, type)
+        super (isWhite, square, row, column, KING_VALUE, KING);
     }
     getAttackingSquares(){
 
     }
 }
 
-class Rook extends Piece {
-    isFirstMove;
-    constructor(isWhite, square, row, column){
-        super (isWhite, square, row, column, value, type)
-    }
-    getAttackingSquares(){
+export class Board {
+    isUnderCheck;
+    squares = new Array(8);
+    whitePieces = new Array(16);
+    blackPieces = new Array(16);
+
+    constructor(){
+        this.squares = new Array(8);
+        for (let i = 1; i <= 8; i++) {
+            this.squares[i] = new Array(8);
+        }
+
 
     }
+
+    validateMove;
+    isDraw;
+    isMath;
+    findWinner;
+
+    clearSelections;
+
 }
 
-class bishop extends Piece {
-    getAttackingSquares(){
+let board = new Board();
+console.log(board.squares);
 
-    }
-}
-
-class Knight extends Piece {
-    getAttackingSquares(){}
-}
-
-class queen extends Piece {
-    getAttackingSquares(){}
-}
-
-class King extends Piece {
-    getAttackingSquares(){}
-}

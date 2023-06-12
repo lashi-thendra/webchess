@@ -67,7 +67,7 @@ export class Pawn extends Piece {
         [[this.column+1, this.row+increment],[this.column-1, this.row+increment]].forEach((square)=>{
             if(square[0]<0 || square[0]>7 || square[1] >7) return;
             if(!board.squares[square[0]][square[1]]) return;
-            if(!board.squares[square[0]][square[1]].isWhite) caculatedSquares.push(square);
+            if(board.squares[square[0]][square[1]].isWhite != this.isWhite) caculatedSquares.push(square);
         })
 
         return caculatedSquares;
@@ -79,7 +79,30 @@ export class Rook extends Piece {
     constructor(isWhite,  row, column){
         super (isWhite,  row, column, ROOK_VALUE, ROOK);
     }
-    getAttackingSquares(){
+    getAttackingSquares(board){
+        let piece;
+        let caculatedSquares = [];
+        let squares = board.squares;
+        let x = this.column;
+        let y = this.row;
+
+        [[0,1],[0,-1],[1,0],[-1,0]].forEach((arr)=>{
+            console.log("ireation starting");
+            let i = arr[0];
+            let j = arr[1];
+            let t = 1;
+            while( x+i*t >= 0 && x+i*t <= 7 && y+j*t >= 0 && y+j*t <= 7 ){
+                piece = squares[x+i*t][y+j*t];
+                if(!piece) caculatedSquares.push([x+i*t,y+j*t]);
+                else if(piece.isWhite != this.isWhite){
+                    caculatedSquares.push([x+i*t,y+j*t]);
+                    break;
+                } 
+                else break;
+                t += 1;
+            }
+        });
+        return caculatedSquares;
 
     }
 }
@@ -89,7 +112,31 @@ export class Bishop extends Piece {
         super (isWhite,  row, column, BISHOP_VALUE, BISHOP);
     }
     
-    getAttackingSquares(){
+    getAttackingSquares(board){
+    
+        let piece;
+        let caculatedSquares = [];
+        let squares = board.squares;
+        let x = this.column;
+        let y = this.row;
+
+        [[1,1],[1,-1],[-1,-1],[-1,1]].forEach((arr)=>{
+            console.log("ireation starting");
+            let i = arr[0];
+            let j = arr[1];
+            let t = 1;
+            while( x+i*t >= 0 && x+i*t <= 7 && y+j*t >= 0 && y+j*t <= 7 ){
+                piece = squares[x+i*t][y+j*t];
+                if(!piece) caculatedSquares.push([x+i*t,y+j*t]);
+                else if(piece.isWhite != this.isWhite){
+                    caculatedSquares.push([x+i*t,y+j*t]);
+                    break;
+                } 
+                else break;
+                t += 1;
+            }
+        });
+        return caculatedSquares;
 
     }
 }
@@ -121,8 +168,30 @@ export class Queen extends Piece {
     constructor(isWhite,  row, column){
         super (isWhite,  row, column, QUEEN_VALUE, QUEEN);
     }
-    getAttackingSquares(){
-        
+    getAttackingSquares(board){
+        let piece;
+        let caculatedSquares = [];
+        let squares = board.squares;
+        let x = this.column;
+        let y = this.row;
+
+        [[1,1],[1,-1],[-1,-1],[-1,1],[0,1],[0,-1],[1,0],[-1,0]].forEach((arr)=>{
+            console.log("ireation starting");
+            let i = arr[0];
+            let j = arr[1];
+            let t = 1;
+            while( x+i*t >= 0 && x+i*t <= 7 && y+j*t >= 0 && y+j*t <= 7 ){
+                piece = squares[x+i*t][y+j*t];
+                if(!piece) caculatedSquares.push([x+i*t,y+j*t]);
+                else if(piece.isWhite != this.isWhite){
+                    caculatedSquares.push([x+i*t,y+j*t]);
+                    break;
+                } 
+                else break;
+                t += 1;
+            }
+        });
+        return caculatedSquares;
     }
 }
 
@@ -130,8 +199,27 @@ export class King extends Piece {
     constructor(isWhite,  row, column){
         super (isWhite,  row, column, KING_VALUE, KING);
     }
-    getAttackingSquares(){
+        getAttackingSquares(board){
+        let piece;
+        let caculatedSquares = [];
+        let squares = board.squares;
+        let x = this.column;
+        let y = this.row;
 
+        [[1,1],[1,-1],[-1,-1],[-1,1],[0,1],[0,-1],[1,0],[-1,0]].forEach((arr)=>{
+            console.log("ireation starting");
+            let i = arr[0];
+            let j = arr[1];
+            let t = 1;
+            if( x+i*t >= 0 && x+i*t <= 7 && y+j*t >= 0 && y+j*t <= 7 ){
+                piece = squares[x+i*t][y+j*t];
+                if(!piece) caculatedSquares.push([x+i*t,y+j*t]);
+                else if(piece.isWhite != this.isWhite){
+                    caculatedSquares.push([x+i*t,y+j*t]);
+                } 
+            }
+        });
+        return caculatedSquares;
     }
 }
 
@@ -146,7 +234,7 @@ export class Board {
         this.squares = new Array(8);
         // adding 8 cols with 8 rows in each
         for (let i = 0; i < 8; i++) {
-            this.squares[i] = new Array(8);
+            this.squares[i] = new Array(8).fill(null);
         }
 
         for (let i = 0; i < 8; i++) {
@@ -182,9 +270,7 @@ export class Board {
                 this.squares[i][7] = new King(false, 7, i);
                 break;
             }
-
         }
-        
     }
 
 
@@ -193,7 +279,7 @@ export class Board {
         let unFiltered =  piece.getAttackingSquares(this);
 
         let emptySqrs = unFiltered.filter((sqr)=>{
-            return this.squares[sqr[0]][sqr[1]] === undefined;
+            return this.squares[sqr[0]][sqr[1]] === null;
         });
 
         let enemySqrs =  unFiltered.filter((sqr)=>{

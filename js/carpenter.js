@@ -35,9 +35,22 @@ export class Piece {
 
     move(coordinates, board){
         console.log("from move function",coordinates, board);
+
         board.removedPiece =  board.squares[coordinates[0]][coordinates[1]];
+        if(board.removedPiece){
+            if(board.removedPiece.isWhite){
+                let index = board.whitePieces.indexOf(board.removedPiece);
+                board.whitePieces.splice(index,1);
+            }else{
+                let index = board.whitePieces.indexOf(board.removedPiece);
+                board.blackPieces.splice(index,1);
+            }
+        }
+        
+
         board.squares[coordinates[0]][coordinates[1]] = this;
         board.squares[this.column][this.row] = null;
+
         this.previousSquare = [this.column, this.row];
         [this.column, this.row] = coordinates;
         if(this.isFirstMove) this.isFirstMove = false;

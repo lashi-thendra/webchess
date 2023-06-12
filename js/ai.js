@@ -16,7 +16,7 @@ function miniMax(board){
     let number = Math.floor(Math.random()*numberOfBlackPieces);
     console.log("generated random number", number);
     let selectPiece = blackPieces[number];
-
+    console.log("selected piece",selectPiece );
     
 
     let attackingSquares = selectPiece.getAttackingSquares(board);

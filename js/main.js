@@ -168,7 +168,6 @@ function findPawnMoves(piece, colNumber, rowNumber){
         allowedSquares.push(targetSqure);
     }
     markAllowedSquares();
-
 }
 
 function findRookMoves(piece, colNumber, rowNumber, forwardToBishop){

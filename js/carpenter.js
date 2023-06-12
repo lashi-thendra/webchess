@@ -18,40 +18,75 @@ export class Piece {
     column;
     value;
     type;
+    jqObj;
+    previousSquare;
+    isFirstMove;
 
-    constructor(isWhite, square, row, column, value, type){
+
+    constructor(isWhite,row, column, value, type){
         this.isWhite = isWhite;
-        this.square = square;
         this.row = row;
         this.column = column;
         this.value = value;
         this.type = type;
+        this.previousSquare = null;
+        this.isFirstMove = true;
     }
+
+    move(coordinates, board){
+        board.removedPiece =  board.squares[coordinates[0]][coordinates[1]];
+        board.squares[coordinates[0]][coordinates[1]] = this;
+        board.squares[this.column][this.row] = null;
+        this.previousSquare = [this.column, this.row];
+        [this.column, this.row] = coordinates;
+        if(this.isFirstMove) this.isFirstMove = false;
+        console.log(board.squares);
+    }
+
 }
 
 export class Pawn extends Piece {
-    isFirstMove;
-    constructor(isWhite, square, row, column){
-        super (isWhite, square, row, column, PAWN_VALUE, PAWN);
+    constructor(isWhite, row, column){
+        super (isWhite, row, column, PAWN_VALUE, PAWN);
     }
-    getAttackingSquares(){
+    getAttackingSquares(board){
+        let increment = (this.isWhite)? 1:-1;
 
+        let caculatedSquares = [];
+
+
+        for(let i = 1; i < 3 ; i ++){
+            let targetSqure = [this.column, this.row+increment*i];
+            if(board.squares[this.column][this.row+increment*i]) break;
+            if(i===2 && !this.isFirstMove) break;
+            caculatedSquares.push(targetSqure);
+            
+        }
+
+    
+        [[this.column+1, this.row+increment],[this.column-1, this.row+increment]].forEach((square)=>{
+            if(square[0]<0 || square[0]>7 || square[1] >7) return;
+            if(!board.squares[square[0]][square[1]]) return;
+            if(!board.squares[square[0]][square[1]].isWhite) caculatedSquares.push(square);
+        })
+
+        return caculatedSquares;
     }
 }
 
 export class Rook extends Piece {
     isFirstMove;
-    constructor(isWhite, square, row, column){
-        super (isWhite, square, row, column, ROOK_VALUE, ROOK);
+    constructor(isWhite,  row, column){
+        super (isWhite,  row, column, ROOK_VALUE, ROOK);
     }
     getAttackingSquares(){
 
     }
 }
 
-export class bishop extends Piece {
-    constructor(isWhite, square, row, column){
-        super (isWhite, square, row, column, BISHOP_VALUE, BISHOP);
+export class Bishop extends Piece {
+    constructor(isWhite,  row, column){
+        super (isWhite,  row, column, BISHOP_VALUE, BISHOP);
     }
     
     getAttackingSquares(){
@@ -61,17 +96,30 @@ export class bishop extends Piece {
 
 export class Knight extends Piece {
     isFirstMove;
-    constructor(isWhite, square, row, column){
-        super (isWhite, square, row, column, KNIGHT_VALUE, KNIGHT);
+    constructor(isWhite,  row, column){
+        super (isWhite,  row, column, KNIGHT_VALUE, KNIGHT);
     }
     getAttackingSquares(){
+
+        let caculatedSquares = [];
+        let row;
+        let col;
+
+        [[1,2],[1,-2],[2,1],[2,-1],[-1,2],[-1,-2],[-2,1],[-2,-1]].forEach(([i,j])=>{
+            col = this.column + i;
+            row = this.row + j;
+            if(col<0 || col>7 || row >7) return;
+            caculatedSquares.push([col, row]);
+        });
+
+        return caculatedSquares;
 
     }
 }
 
-export class queen extends Piece {
-    constructor(isWhite, square, row, column){
-        super (isWhite, square, row, column, QUEEN_VALUE, QUEEN);
+export class Queen extends Piece {
+    constructor(isWhite,  row, column){
+        super (isWhite,  row, column, QUEEN_VALUE, QUEEN);
     }
     getAttackingSquares(){
         
@@ -79,8 +127,8 @@ export class queen extends Piece {
 }
 
 export class King extends Piece {
-    constructor(isWhite, square, row, column){
-        super (isWhite, square, row, column, KING_VALUE, KING);
+    constructor(isWhite,  row, column){
+        super (isWhite,  row, column, KING_VALUE, KING);
     }
     getAttackingSquares(){
 
@@ -92,17 +140,79 @@ export class Board {
     squares = new Array(8);
     whitePieces = new Array(16);
     blackPieces = new Array(16);
+    removedPiece = null;
 
     constructor(){
         this.squares = new Array(8);
-        for (let i = 1; i <= 8; i++) {
+        // adding 8 cols with 8 rows in each
+        for (let i = 0; i < 8; i++) {
             this.squares[i] = new Array(8);
         }
 
+        for (let i = 0; i < 8; i++) {
+            this.squares[i][1] = new Pawn(true, 1, i);
+            this.squares[i][6] = new Pawn(false, 6, i);
 
+            let j;
+            if(i == 7 || i == 0) j = 0;
+            if(i == 6 || i == 1) j = 1;
+            if(i == 5 || i == 2) j = 2;
+            if(i == 3) j = 3;
+            if(i == 4) j = 4;
+
+            switch(j){
+                case 0: 
+                this.squares[i][0] = new Rook(true, 0, i);
+                this.squares[i][7] = new Rook(false, 7, i);
+                break;
+                case 1: 
+                this.squares[i][0] = new Knight(true, 0, i);
+                this.squares[i][7] = new Knight(false, 7, i);
+                break;
+                case 2: 
+                this.squares[i][0] = new Bishop(true, 0, i);
+                this.squares[i][7] = new Bishop(false, 7, i);
+                break;
+                case 3: 
+                this.squares[i][0] = new Queen(true, 0, i);
+                this.squares[i][7] = new Queen(false, 7, i);
+                break;
+                case 4: 
+                this.squares[i][0] = new King(true, 0, i);
+                this.squares[i][7] = new King(false, 7, i);
+                break;
+            }
+
+        }
+        
     }
 
-    validateMove;
+
+    findPossibleSquares(coordinates){
+        let piece = this.squares[coordinates[0]][coordinates[1]];
+        let unFiltered =  piece.getAttackingSquares(this);
+
+        let emptySqrs = unFiltered.filter((sqr)=>{
+            return this.squares[sqr[0]][sqr[1]] === undefined;
+        });
+
+        let enemySqrs =  unFiltered.filter((sqr)=>{
+            if(!this.squares[sqr[0]][sqr[1]]) return false;
+            return !this.squares[sqr[0]][sqr[1]].isWhite;
+        });
+        
+        return [emptySqrs, enemySqrs];
+    };
+
+    movePiece(selectedPieceCor, coordinates){        
+        let piece = this.squares[selectedPieceCor[0]][selectedPieceCor[1]];
+        piece.move(coordinates, this);
+        return null;
+    }
+
+    validateMove(){
+
+    };
     isDraw;
     isMath;
     findWinner;
@@ -110,7 +220,4 @@ export class Board {
     clearSelections;
 
 }
-
-let board = new Board();
-console.log(board.squares);
 

@@ -1,4 +1,5 @@
 
+import { aiMove } from './ai.js';
 import { Board } from './carpenter.js';
 
 const board = new Board();
@@ -53,7 +54,7 @@ function selectPiece(coordinates){
 function movePiece(coordinates){
     let validationMessage = board.movePiece(selectedPieceCor ,coordinates);
     if(validationMessage){
-        // show that the move is invalid;
+        // Todo: show that the move is invalid;
         return;
     }
 
@@ -72,6 +73,8 @@ function movePiece(coordinates){
     enemySqrs.forEach((sqr)=>{
         $(`.cr-${sqr[0]}-${sqr[1]}`).removeClass('attack');
     });
+
+    aiMove(board);
 
 
 }
@@ -100,6 +103,7 @@ function getCordinatesFromPiece(piece){
     let squareElm = piece.parent();
     return getCordinatesFromSquare(squareElm);
 }
+
 
 
 

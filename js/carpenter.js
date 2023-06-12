@@ -226,8 +226,8 @@ export class King extends Piece {
 export class Board {
     isUnderCheck;
     squares = new Array(8);
-    whitePieces = new Array(16);
-    blackPieces = new Array(16);
+    whitePieces = [];
+    blackPieces = [];
     removedPiece = null;
 
     constructor(){
@@ -240,6 +240,8 @@ export class Board {
         for (let i = 0; i < 8; i++) {
             this.squares[i][1] = new Pawn(true, 1, i);
             this.squares[i][6] = new Pawn(false, 6, i);
+            this.whitePieces.push(this.squares[i][1]);
+            this.blackPieces.push(this.squares[i][6]);
 
             let j;
             if(i == 7 || i == 0) j = 0;
@@ -252,25 +254,35 @@ export class Board {
                 case 0: 
                 this.squares[i][0] = new Rook(true, 0, i);
                 this.squares[i][7] = new Rook(false, 7, i);
+                this.#pushPieces(this.squares[i][0], this.squares[i][7]);
                 break;
                 case 1: 
                 this.squares[i][0] = new Knight(true, 0, i);
                 this.squares[i][7] = new Knight(false, 7, i);
+                this.#pushPieces(this.squares[i][0], this.squares[i][7]);
                 break;
                 case 2: 
                 this.squares[i][0] = new Bishop(true, 0, i);
                 this.squares[i][7] = new Bishop(false, 7, i);
+                this.#pushPieces(this.squares[i][0], this.squares[i][7]);
                 break;
                 case 3: 
                 this.squares[i][0] = new Queen(true, 0, i);
                 this.squares[i][7] = new Queen(false, 7, i);
+                this.#pushPieces(this.squares[i][0], this.squares[i][7]);
                 break;
                 case 4: 
                 this.squares[i][0] = new King(true, 0, i);
                 this.squares[i][7] = new King(false, 7, i);
+                this.#pushPieces(this.squares[i][0], this.squares[i][7]);
                 break;
             }
         }
+    }
+
+    #pushPieces(white, black){
+        this.blackPieces.push(black);
+        this.whitePieces.push(white);
     }
 
 
@@ -284,7 +296,7 @@ export class Board {
 
         let enemySqrs =  unFiltered.filter((sqr)=>{
             if(!this.squares[sqr[0]][sqr[1]]) return false;
-            return !this.squares[sqr[0]][sqr[1]].isWhite;
+            return (this.squares[sqr[0]][sqr[1]].isWhite != piece.isWhite);
         });
         
         return [emptySqrs, enemySqrs];

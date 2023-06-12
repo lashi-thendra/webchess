@@ -1,11 +1,11 @@
+import { moveAimove } from "./controller.js";
+
 export function aiMove(board){
 
     let [selectPiece, selectedSquare]= miniMax(board);
-    board.movePiece( [selectPiece.column, selectPiece.row] , selectedSquare);
-    console.log(selectPiece, selectedSquare);
-    let pieceDiv =  $(`.cr-${selectPiece.column}-${selectPiece.row} > div`);
-    $(`.cr-${selectedSquare[0]}-${selectedSquare[1]}`).empty();
-    $(`.cr-${selectedSquare[0]}-${selectedSquare[1]}`).append(pieceDiv);
+    
+    moveAimove([selectPiece.column, selectPiece.row] , selectedSquare);
+    
 
 }
 
@@ -14,16 +14,19 @@ function miniMax(board){
     console.log(blackPieces);
     let numberOfBlackPieces = blackPieces.length;
     let number = Math.floor(Math.random()*numberOfBlackPieces);
-
+    console.log("generated random number", number);
     let selectPiece = blackPieces[number];
 
-    let attackingSquares = selectPiece.getAttackingSquares(board);
+    
 
+    let attackingSquares = selectPiece.getAttackingSquares(board);
+    console.log("attacking squares",attackingSquares);
     let numbrOfAttackingSquares = attackingSquares.length;
+    if(numbrOfAttackingSquares === 0 ) return miniMax(board);
     number = Math.floor(Math.random()*numbrOfAttackingSquares);
 
     let selectedSquare = attackingSquares[number];
-
+    console.log("selected square", selectedSquare);
     return [selectPiece, selectedSquare];
 
 }

@@ -104,6 +104,13 @@ function getCordinatesFromPiece(piece){
     return getCordinatesFromSquare(squareElm);
 }
 
+export function moveAimove(aiSelectedCords, aiSelectedSquare){
+    board.movePiece( aiSelectedCords, aiSelectedSquare);
+    let pieceDiv =  $(`.cr-${aiSelectedCords[0]}-${aiSelectedCords[1]} > div`);
+    $(`.cr-${aiSelectedSquare[0]}-${aiSelectedSquare[1]}`).empty();
+    $(`.cr-${aiSelectedSquare[0]}-${aiSelectedSquare[1]}`).append(pieceDiv);
+}
+
 
 
 

@@ -34,6 +34,7 @@ export class Piece {
     }
 
     move(coordinates, board){
+        console.log("from move function",coordinates, board);
         board.removedPiece =  board.squares[coordinates[0]][coordinates[1]];
         board.squares[coordinates[0]][coordinates[1]] = this;
         board.squares[this.column][this.row] = null;

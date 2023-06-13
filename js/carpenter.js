@@ -34,8 +34,6 @@ export class Piece {
     }
 
     move(coordinates, board){
-        console.log("from move function",coordinates, board);
-
         board.removedPiece =  board.squares[coordinates[0]][coordinates[1]];
         if(board.removedPiece){
             if(board.removedPiece.isWhite){
@@ -54,7 +52,23 @@ export class Piece {
         this.previousSquare = [this.column, this.row];
         [this.column, this.row] = coordinates;
         if(this.isFirstMove) this.isFirstMove = false;
-        console.log(board.squares);
+    }
+
+    undoMove(board){
+        console.log("undo move ---");
+        board.squares[this.previousSquare[0]][this.previousSquare[1]] = this;
+        if(board.removedPiece){
+            board.squares[this.column][this.row] = board.removedPiece;
+            if(board.removedPiece.isWhite){
+                board.whitePieces.push(board.removedPiece);
+            }else{
+                board.blackPieces.push(board.removedPiece);
+            }
+        }else{
+            board.squares[this.column][this.row] = null;
+        }
+        this.column = this.previousSquare[0];
+        this.row = this.previousSquare[1];
     }
 
 }
@@ -99,7 +113,7 @@ export class Rook extends Piece {
         let y = this.row;
 
         [[0,1],[0,-1],[1,0],[-1,0]].forEach((arr)=>{
-            console.log("ireation starting");
+
             let i = arr[0];
             let j = arr[1];
             let t = 1;
@@ -133,7 +147,6 @@ export class Bishop extends Piece {
         let y = this.row;
 
         [[1,1],[1,-1],[-1,-1],[-1,1]].forEach((arr)=>{
-            console.log("ireation starting");
             let i = arr[0];
             let j = arr[1];
             let t = 1;
@@ -188,7 +201,6 @@ export class Queen extends Piece {
         let y = this.row;
 
         [[1,1],[1,-1],[-1,-1],[-1,1],[0,1],[0,-1],[1,0],[-1,0]].forEach((arr)=>{
-            console.log("ireation starting");
             let i = arr[0];
             let j = arr[1];
             let t = 1;
@@ -219,7 +231,6 @@ export class King extends Piece {
         let y = this.row;
 
         [[1,1],[1,-1],[-1,-1],[-1,1],[0,1],[0,-1],[1,0],[-1,0]].forEach((arr)=>{
-            console.log("ireation starting");
             let i = arr[0];
             let j = arr[1];
             let t = 1;
@@ -241,6 +252,8 @@ export class Board {
     whitePieces = [];
     blackPieces = [];
     removedPiece = null;
+    blackKing;
+    whiteKing;
 
     constructor(){
         this.squares = new Array(8);
@@ -286,6 +299,8 @@ export class Board {
                 case 4: 
                 this.squares[i][0] = new King(true, 0, i);
                 this.squares[i][7] = new King(false, 7, i);
+                this.whiteKing = this.squares[i][0];
+                this.blackKing = this.squares[i][7];
                 this.#pushPieces(this.squares[i][0], this.squares[i][7]);
                 break;
             }
@@ -316,15 +331,54 @@ export class Board {
 
     movePiece(selectedPieceCor, coordinates){        
         let piece = this.squares[selectedPieceCor[0]][selectedPieceCor[1]];
+        let isWhite = piece.isWhite;
         piece.move(coordinates, this);
+        if(this.isIllegalMove(isWhite)){
+            piece.undoMove(this);
+            console.log("illegal move");
+            return "Illegal move";
+        } 
+        // if(this.isDraw(isWhite)) return "Draw";
+        // if(this.isMate(isWhite)) return this.findWinner();
+        
         return null;
     }
 
-    validateMove(){
+    isIllegalMove(isWhite){
+        console.log(this);
+
+        if (isWhite) {
+            for (const piece of this.blackPieces) {
+                const attackingSquares = piece.getAttackingSquares(this);
+                for (const sqr of attackingSquares) {
+                    if (this.squares[sqr[0]][sqr[1]]===this.whiteKing) {
+                        return true;
+                    }
+                }
+            }
+        } else {
+            for (const piece of this.whitePieces) {
+                const attackingSquares = piece.getAttackingSquares(this);
+                for (const sqr of attackingSquares) {
+                    if (this.squares[sqr[0]][sqr[1]]===this.blackKing) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
 
     };
-    isDraw;
-    isMath;
+
+    isDraw(isWhite){
+        
+    };
+
+    
+    
+    isMate;
+
     findWinner;
 
     clearSelections;

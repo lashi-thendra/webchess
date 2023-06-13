@@ -42,7 +42,7 @@ export class Piece {
                 let index = board.whitePieces.indexOf(board.removedPiece);
                 board.whitePieces.splice(index,1);
             }else{
-                let index = board.whitePieces.indexOf(board.removedPiece);
+                let index = board.blackPieces.indexOf(board.removedPiece);
                 board.blackPieces.splice(index,1);
             }
         }
@@ -68,13 +68,11 @@ export class Pawn extends Piece {
 
         let caculatedSquares = [];
 
-
         for(let i = 1; i < 3 ; i ++){
             let targetSqure = [this.column, this.row+increment*i];
             if(board.squares[this.column][this.row+increment*i]) break;
             if(i===2 && !this.isFirstMove) break;
             caculatedSquares.push(targetSqure);
-            
         }
 
     

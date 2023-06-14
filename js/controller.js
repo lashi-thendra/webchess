@@ -7,6 +7,8 @@ let emptySqrs = [];
 let enemySqrs = [];
 let selectedPieceCor = null;
 
+let audSelfMove = new Audio('./audio/move-self.mp3');
+
 //setting listeners
 $('#board').on('mousedown','.piece',(eventData)=>{
     eventData.stopPropagation();
@@ -61,7 +63,7 @@ function movePiece(coordinates){
     let pieceDiv =  $(`.cr-${selectedPieceCor[0]}-${selectedPieceCor[1]} > div`);
     $(`.cr-${coordinates[0]}-${coordinates[1]}`).empty();
     $(`.cr-${coordinates[0]}-${coordinates[1]}`).append(pieceDiv);
-
+    audSelfMove.play();
 
     pieceDiv.css('left','0');
     pieceDiv.css('top','0');

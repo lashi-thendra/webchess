@@ -74,7 +74,8 @@ function movePiece(coordinates){
         $(`.cr-${sqr[0]}-${sqr[1]}`).removeClass('attack');
     });
 
-    aiMove(board);
+    let aiCordsAndPiece = aiMove(board);
+    moveAimove(aiCordsAndPiece[0], aiCordsAndPiece[1]);
 
 
 }
@@ -104,7 +105,7 @@ function getCordinatesFromPiece(piece){
     return getCordinatesFromSquare(squareElm);
 }
 
-export function moveAimove(aiSelectedCords, aiSelectedSquare){
+function moveAimove(aiSelectedCords, aiSelectedSquare){
     board.movePiece( aiSelectedCords, aiSelectedSquare);
     let pieceDiv =  $(`.cr-${aiSelectedCords[0]}-${aiSelectedCords[1]} > div`);
     $(`.cr-${aiSelectedSquare[0]}-${aiSelectedSquare[1]}`).empty();

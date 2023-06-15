@@ -163,7 +163,7 @@ export class Knight extends Piece {
     constructor(isWhite, row, column) {
         super(isWhite, row, column, KNIGHT_VALUE, KNIGHT);
     }
-    getAttackingSquares() {
+    getAttackingSquares(board) {
 
         let caculatedSquares = [];
         let row;
@@ -173,7 +173,8 @@ export class Knight extends Piece {
             col = this.column + i;
             row = this.row + j;
             if (col < 0 || col > 7 || row > 7) return;
-            caculatedSquares.push([col, row]);
+            let underAttack = board.squares[col][row];
+            if( !underAttack || (underAttack.isWhite !== this.isWhite))caculatedSquares.push([col, row]);
         });
 
         return caculatedSquares;
@@ -212,7 +213,7 @@ export class Queen extends Piece {
 
 export class King extends Piece {
     constructor(isWhite, row, column) {
-        super(isWhite, row, column, WKING_VALUE, KING);
+        super(isWhite, row, column, KING_VALUE, KING);
     }
     getAttackingSquares(board) {
         let piece;
@@ -252,6 +253,8 @@ export class Board {
         for (let i = 0; i < 8; i++) {
             this.squares[i] = new Array(8).fill(null);
         }
+
+
 
         for (let i = 0; i < 8; i++) {
             this.squares[i][1] = new Pawn(true, 1, i);
@@ -296,6 +299,7 @@ export class Board {
                     break;
             }
         }
+        console.log(this)
     }
 
     #pushPieces(white, black) {

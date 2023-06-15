@@ -8,8 +8,8 @@ const ROOK_VALUE = 5;
 const KNIGHT_VALUE = 3;
 const BISHOP_VALUE = 3;
 const QUEEN_VALUE = 9;
-const WKING_VALUE = 1000000;
-const BKING_VALUE = 1000000;
+const KING_VALUE = 1000000;
+
 
 const PAWN = 1;
 const ROOK = 2;

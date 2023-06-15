@@ -76,9 +76,14 @@ function movePiece(coordinates){
         $(`.cr-${sqr[0]}-${sqr[1]}`).removeClass('attack');
     });
 
-    let aiCordsAndPiece = aiMove(board);
-    moveAimove(aiCordsAndPiece[0], aiCordsAndPiece[1]);
+    console.log("starting to evaluate AI move...");
 
+    setTimeout(()=>{
+        let aiCordsAndPiece = aiMove(board);
+        moveAimove(aiCordsAndPiece[0], aiCordsAndPiece[1]);
+    },100);
+
+    
 
 }
 

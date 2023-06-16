@@ -1,3 +1,4 @@
+import {MAX_DEPTH, miniMax2} from "./ai.js";
 
 
 export class Piece {
@@ -335,9 +336,16 @@ export class Board {
             return ILLEGAL_MOVE;
         }
         let checkState = this.checkForCheck(isWhite);
-        // if(this.isDraw(isWhite)) return "Draw";
-        // if(this.isMate(isWhite)) return this.findWinner();
-
+        console.log("check state:",checkState);
+        let noLegalMoves = this.isDraw(isWhite);
+        console.log("no lineage moves:",checkState);
+        if(checkState && noLegalMoves) {
+            console.log("chacke state and noLogalMoves", checkState, noLegalMoves);
+            if(checkState === WHITE_IN_CHECK) return BLACK_WIN;
+            else return WHITE_WIN;
+        };
+        console.log("returning checkstate", checkState);
+        if(checkState) return checkState;
         return null;
     }
 
@@ -367,7 +375,6 @@ export class Board {
     };
 
     checkForCheck(isWhite) {
-        console.log("check for check");
         let isInCheck = this.kingUnderAttack(!isWhite);
         if (isInCheck) {
             if (isWhite) {
@@ -380,17 +387,19 @@ export class Board {
                 this.inCheck = WHITE_IN_CHECK;
                 return WHITE_IN_CHECK;
             }
-            
         }
-        console.log("under check", isInCheck);
-        this.inCheck = null;
         return false;
-
     }
-            // isMate;
 
-        // findWinner;
+    isDraw(whitesMove){
+        let hValue = miniMax2(MAX_DEPTH-2, !whitesMove, this);
+        console.log(hValue);
+        if(hValue === 10000 || hValue === -10000){
+            console.log("draw");
+            return DRAW;
+        }
+        else return false;
+    }
 
-        // clearSelections;
 }
 

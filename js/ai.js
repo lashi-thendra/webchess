@@ -1,6 +1,6 @@
 
 
-const MAX_DEPTH = 4;
+export const MAX_DEPTH = 2;
 
 export function aiMove(board) {
 
@@ -8,7 +8,6 @@ export function aiMove(board) {
     let [selectPiece, selectedSquare] = miniMaxCaller(board);
     // console.warn(selectPiece, selectedSquare);
     // let [selectPiece, selectedSquare] = random(board);
-    // ToDo: call movePiece in board.
     return [[selectPiece.column, selectPiece.row], selectedSquare];
 
 }
@@ -43,7 +42,7 @@ function miniMaxCaller(board) {
     let calculateSquare;
     let pieces = [...board.blackPieces];
     
-    let value = 11111111;
+    let value = 1000000000;
     for (let i = 0; i < pieces.length; i++) {
         let piece = pieces[i];
         let pieceCords = [piece.column, piece.row];
@@ -56,8 +55,8 @@ function miniMaxCaller(board) {
 
             let removedPiece = board.squares[sqr[0]][sqr[1]];
             if(removedPiece){
-                if(removedPiece === board.blackKing) return 8888888888;
-                if(removedPiece === board.whiteKing) return -8888888888;
+                if(removedPiece === board.blackKing) return 10000;
+                if(removedPiece === board.whiteKing) return -10000;
                 let index = board.whitePieces.indexOf(removedPiece);
                 board.whitePieces.splice(index,1);
             }
@@ -67,7 +66,7 @@ function miniMaxCaller(board) {
             piece.column = sqr[0];
             piece.row = sqr[1];
 
-            console.log("before minimax:", board.squares);
+            // console.log("before minimax:", board.squares);
 
             let hVal = miniMax2(1, true, board);
 
@@ -77,9 +76,9 @@ function miniMaxCaller(board) {
                 value = hVal;
             }
 
-            console.warn("piece=", piece);
-            console.warn("hVal=", hVal, "Value", value,"board", board.squares);
-            console.warn("---------------");
+            // console.warn("piece=", piece);
+            // console.warn("hVal=", hVal, "Value", value,"board", board.squares);
+            // console.warn("---------------");
 
             board.squares[sqr[0]][sqr[1]] = removedPiece;
             board.squares[pieceCords[0]][pieceCords[1]] = piece;
@@ -96,7 +95,7 @@ function miniMaxCaller(board) {
     return [calculatedPiece, calculateSquare];
 }
 
-function miniMax2(depth, maxPlayer, board) {
+export function miniMax2(depth, maxPlayer, board) {
     if(depth===MAX_DEPTH){
 
         return heuristicValue(board);
@@ -104,7 +103,7 @@ function miniMax2(depth, maxPlayer, board) {
 
     let pieces = maxPlayer ? board.whitePieces : board.blackPieces;
     // let oppPieces = !maxPlayer ? board.blackPieces : board.whitePieces;
-    let value = maxPlayer ? -2222222 : 2222222;
+    let value = maxPlayer ? -1000000000 : 1000000000;
 
     if(maxPlayer){
         let piecesP = [...pieces];
@@ -118,8 +117,8 @@ function miniMax2(depth, maxPlayer, board) {
 
                 let removedPiece = board.squares[sqr[0]][sqr[1]];
                 if(removedPiece){
-                    if(removedPiece === board.blackKing) return 8888888888;
-                    if(removedPiece === board.whiteKing) return -8888888888;
+                    if(removedPiece === board.blackKing) return 10000;
+                    if(removedPiece === board.whiteKing) return -10000;
                     let index = board.blackPieces.indexOf(removedPiece);
                     board.blackPieces.splice(index,1);
 
@@ -160,8 +159,8 @@ function miniMax2(depth, maxPlayer, board) {
 
                 let removedPiece = board.squares[sqr[0]][sqr[1]];
                 if(removedPiece){
-                    if(removedPiece === board.blackKing) return 8888888888;
-                    if(removedPiece === board.whiteKing) return -8888888888;
+                    if(removedPiece === board.blackKing) return 10000;
+                    if(removedPiece === board.whiteKing) return -10000;
                     let index = board.whitePieces.indexOf(removedPiece);
                     board.whitePieces.splice(index,1);
                 }
@@ -188,8 +187,6 @@ function miniMax2(depth, maxPlayer, board) {
         }
         return value;
     }
-
-
 }
 
 function heuristicValue(board){

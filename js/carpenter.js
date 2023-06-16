@@ -342,9 +342,9 @@ export class Board {
         let checkState = this.checkForCheck(isWhite);
         console.log("check state:",checkState);
         let noLegalMoves = this.isDraw(isWhite);
-        console.log("no lineage moves:",checkState);
+        console.log("no legal moves:",checkState);
         if(checkState && noLegalMoves) {
-            console.log("chacke state and noLogalMoves", checkState, noLegalMoves);
+            console.log("check state and noLegalMoves", checkState, noLegalMoves);
             if(checkState === WHITE_IN_CHECK) return BLACK_WIN;
             else return WHITE_WIN;
         };

@@ -6,8 +6,13 @@ let emptySqrs = [];
 let enemySqrs = [];
 let selectedPieceCor = null;
 let specialSound = false;
+let captured = false;
 
 let audSelfMove = new Audio('./audio/move-self.mp3');
+let audCapture = new Audio('./audio/capture.mp3');
+let audCheck = new Audio('./audio/move-check.mp3');
+let audNotify = new Audio('./audio/notify.mp3');
+let audPromote = new Audio('./audio/promote.mp3');
 
 //setting listeners
 $('#board').on('mousedown','.piece',(eventData)=>{
@@ -56,8 +61,13 @@ function movePiece(coordinates){
     let validationMessage = board.movePiece(selectedPieceCor ,coordinates);
     specialSound = false;
     actionForValidation(validationMessage);
+    captured = board.captured;
+    console.log("captured?:", captured);
 
-    if (validationMessage === ILLEGAL_MOVE) return;
+    if (validationMessage === ILLEGAL_MOVE){
+        audNotify.play();
+        return;
+    }
 
     let pieceDiv =  $(`.cr-${selectedPieceCor[0]}-${selectedPieceCor[1]} > div`);
     $(`.cr-${coordinates[0]}-${coordinates[1]}`).empty();
@@ -74,14 +84,17 @@ function movePiece(coordinates){
         $(`.cr-${sqr[0]}-${sqr[1]}`).removeClass('attack');
     });
 
+
     playSound();
+    if(validationMessage === WHITE_WIN) return;
 
     console.log("starting to evaluate AI move...");
+
 
     setTimeout(()=>{
         let aiCordsAndPiece = aiMove(board);
         moveAiMove(aiCordsAndPiece[0], aiCordsAndPiece[1]);
-    },100);
+    },500);
 
     
 
@@ -115,8 +128,16 @@ function getCoordinatesFromPiece(piece){
 function moveAiMove(aiSelectedCords, aiSelectedSquare){
     let validationMessage = board.movePiece( aiSelectedCords, aiSelectedSquare);
     specialSound = false;
+    captured = false;
     actionForValidation(validationMessage);
+    captured = board.captured;
+    console.log("captured?:", captured);
+    playSound();
 
+    if(validationMessage === ILLEGAL_MOVE) {
+        console.info("AI played an Illegal move.")
+        // ToDo: Display Something
+    }
 
     let pieceDiv =  $(`.cr-${aiSelectedCords[0]}-${aiSelectedCords[1]} > div`);
     $(`.cr-${aiSelectedSquare[0]}-${aiSelectedSquare[1]}`).empty();
@@ -151,13 +172,20 @@ function actionForValidation(validationMessage){
 }
 
 function playSound(){
-    if(!specialSound) {
-        audSelfMove.play().then(r => console.log(r) );
-        return;
-    }
+    if(captured) audCapture.play();
+
     switch (specialSound){
-        case ILLEGAL_MOVE:
+        case ILLEGAL_MOVE: audNotify.play(); break;
+        case BLACK_IN_CHECK : audCheck.play(); break;
+        case WHITE_IN_CHECK: audCheck.play();break;
+        case WHITE_WIN : audCheck.play(); audNotify.play(); break;
+        case BLACK_WIN : audCheck.play(); audNotify.play(); break;
     }
+
+    if(!specialSound && !captured) {
+        audSelfMove.play() ;
+    }
+
 
 }
 

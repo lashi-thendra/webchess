@@ -23,8 +23,10 @@ export class Piece {
     }
 
     move(coordinates, board) {
+        board.captured = false;
         board.removedPiece = board.squares[coordinates[0]][coordinates[1]];
         if (board.removedPiece) {
+            board.captured = true;
             if (board.removedPiece.isWhite) {
                 let index = board.whitePieces.indexOf(board.removedPiece);
                 board.whitePieces.splice(index, 1);
@@ -45,6 +47,7 @@ export class Piece {
 
     undoMove(board) {
         console.log("undo move ---");
+        board.captured = false;
         board.squares[this.previousSquare[0]][this.previousSquare[1]] = this;
         if (board.removedPiece) {
             board.squares[this.column][this.row] = board.removedPiece;
@@ -247,6 +250,7 @@ export class Board {
     inCheck = null;
     blackKing;
     whiteKing;
+    captured = false;
 
     constructor() {
         this.squares = new Array(8);

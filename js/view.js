@@ -1,4 +1,5 @@
 
+
 // add col row attributes and classes 
 $('.square').each((i, element)=>{
     let rowNumber = 7-i%8;

@@ -325,6 +325,7 @@ export class Board {
     };
 
     movePiece(selectedPieceCor, coordinates) {
+
         let piece = this.squares[selectedPieceCor[0]][selectedPieceCor[1]];
         let isWhite = piece.isWhite;
         piece.move(coordinates, this);

@@ -1,11 +1,13 @@
 
 
-const MAX_DEPTH = 3;
+const MAX_DEPTH = 4;
 
 export function aiMove(board) {
 
-    // let [selectPiece, selectedSquare] = miniMaxCaller(board);
-    let [selectPiece, selectedSquare] = random(board);
+
+    let [selectPiece, selectedSquare] = miniMaxCaller(board);
+    // console.warn(selectPiece, selectedSquare);
+    // let [selectPiece, selectedSquare] = random(board);
     // ToDo: call movePiece in board.
     return [[selectPiece.column, selectPiece.row], selectedSquare];
 
@@ -39,19 +41,23 @@ function random(board) {
 function miniMaxCaller(board) {
     let calculatedPiece;
     let calculateSquare;
-    let pieces = board.blackPieces;
+    let pieces = [...board.blackPieces];
     
-    let value = 1000000;
+    let value = 11111111;
     for (let i = 0; i < pieces.length; i++) {
         let piece = pieces[i];
         let pieceCords = [piece.column, piece.row];
 
         let attSqrs = piece.getAttackingSquares(board);
+        // console.warn(attSqrs.length, piece);
         for (let i = 0; i < attSqrs.length; i++) {
+
             let sqr = attSqrs[i];
 
             let removedPiece = board.squares[sqr[0]][sqr[1]];
             if(removedPiece){
+                if(removedPiece === board.blackKing) return 8888888888;
+                if(removedPiece === board.whiteKing) return -8888888888;
                 let index = board.whitePieces.indexOf(removedPiece);
                 board.whitePieces.splice(index,1);
             }
@@ -61,17 +67,25 @@ function miniMaxCaller(board) {
             piece.column = sqr[0];
             piece.row = sqr[1];
 
+            console.log("before minimax:", board.squares);
+
             let hVal = miniMax2(1, true, board);
 
-            if(hVal < value){
+            if(hVal <= value){
                 calculatedPiece = piece;
                 calculateSquare = sqr;
                 value = hVal;
             }
+
+            console.warn("piece=", piece);
+            console.warn("hVal=", hVal, "Value", value,"board", board.squares);
+            console.warn("---------------");
+
             board.squares[sqr[0]][sqr[1]] = removedPiece;
             board.squares[pieceCords[0]][pieceCords[1]] = piece;
             piece.column = pieceCords[0];
             piece.row = pieceCords[1];
+
 
             if(removedPiece){
                 board.whitePieces.push(removedPiece);
@@ -89,12 +103,13 @@ function miniMax2(depth, maxPlayer, board) {
     }
 
     let pieces = maxPlayer ? board.whitePieces : board.blackPieces;
-    let oppPieces = maxPlayer ? board.blackPieces : board.whitePieces;
-    let value = maxPlayer ? -1000000 : 1000000;
+    // let oppPieces = !maxPlayer ? board.blackPieces : board.whitePieces;
+    let value = maxPlayer ? -2222222 : 2222222;
 
     if(maxPlayer){
-        for (let i = 0; i < pieces.length; i++) {
-            let piece = pieces[i];
+        let piecesP = [...pieces];
+        for (let i = 0; i < piecesP.length; i++) {
+            let piece = piecesP[i];
             let pieceCords = [piece.column, piece.row];
 
             let attSqrs = piece.getAttackingSquares(board);
@@ -103,14 +118,18 @@ function miniMax2(depth, maxPlayer, board) {
 
                 let removedPiece = board.squares[sqr[0]][sqr[1]];
                 if(removedPiece){
-                    let index = oppPieces.indexOf(removedPiece);
-                    oppPieces.splice(index,1);
+                    if(removedPiece === board.blackKing) return 8888888888;
+                    if(removedPiece === board.whiteKing) return -8888888888;
+                    let index = board.blackPieces.indexOf(removedPiece);
+                    board.blackPieces.splice(index,1);
+
                 }
 
                 board.squares[piece.column][piece.row] = null;
                 board.squares[sqr[0]][sqr[1]] = piece;
                 piece.column = sqr[0];
                 piece.row = sqr[1];
+
 
                 let hVal = miniMax2(depth+1, false, board);
 
@@ -123,14 +142,16 @@ function miniMax2(depth, maxPlayer, board) {
                 piece.row = pieceCords[1];
 
                 if(removedPiece){
-                    oppPieces.push(removedPiece);
+                    board.blackPieces.push(removedPiece);
                 }
             }
         }
         return value;
+
     }else{
-        for (let i = 0; i < pieces.length; i++) {
-            let piece = pieces[i];
+        let piecesO = [...pieces];
+        for (let i = 0; i < piecesO.length; i++) {
+            let piece = piecesO[i];
             let pieceCords = [piece.column, piece.row];
 
             let attSqrs = piece.getAttackingSquares(board);
@@ -139,8 +160,10 @@ function miniMax2(depth, maxPlayer, board) {
 
                 let removedPiece = board.squares[sqr[0]][sqr[1]];
                 if(removedPiece){
-                    let index = oppPieces.indexOf(removedPiece);
-                    oppPieces.splice(index,1);
+                    if(removedPiece === board.blackKing) return 8888888888;
+                    if(removedPiece === board.whiteKing) return -8888888888;
+                    let index = board.whitePieces.indexOf(removedPiece);
+                    board.whitePieces.splice(index,1);
                 }
 
                 board.squares[piece.column][piece.row] = null;
@@ -159,7 +182,7 @@ function miniMax2(depth, maxPlayer, board) {
                 piece.row = pieceCords[1];
 
                 if(removedPiece){
-                    oppPieces.push(removedPiece);
+                    board.whitePieces.push(removedPiece);
                 }
             }
         }
@@ -177,6 +200,7 @@ function heuristicValue(board){
     board.blackPieces.forEach(p =>{
         value += p.value;
     })
-    console.log(board.squares)
+    // if (value)console.warn("heuristicValue",value);
+
     return value;
 }

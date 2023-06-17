@@ -1,4 +1,6 @@
 const ILLEGAL_MOVE = "Illegal move";
+const SIMPLE_MOVE = "move";
+const CAPTURE = "capture";
 const WHITE_IN_CHECK = "white in check";
 const BLACK_IN_CHECK = "black in check";
 const DRAW = "draw";

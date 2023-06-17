@@ -339,18 +339,20 @@ export class Board {
             piece.undoMove(this);
             return ILLEGAL_MOVE;
         }
+
         let checkState = this.checkForCheck(isWhite);
-        console.log("check state:",checkState);
-        let noLegalMoves = this.isDraw(isWhite);
-        console.log("no legal moves:",checkState);
+        console.warn("check state:",checkState);
+        let noLegalMoves = this.noLegalMoves(isWhite);
+        console.warn("no legal moves:",noLegalMoves);
         if(checkState && noLegalMoves) {
-            console.log("check state and noLegalMoves", checkState, noLegalMoves);
+            console.warn("check state and noLegalMoves", checkState, noLegalMoves);
             if(checkState === WHITE_IN_CHECK) return BLACK_WIN;
             else return WHITE_WIN;
         };
-        console.log("returning checkstate", checkState);
+        console.warn("returning checkstate", checkState);
         if(checkState) return checkState;
-        return null;
+        if(this.captured) return CAPTURE;
+        return SIMPLE_MOVE;
     }
 
     kingUnderAttack(isWhite) {
@@ -395,9 +397,9 @@ export class Board {
         return false;
     }
 
-    isDraw(whitesMove){
+    noLegalMoves(whitesMove){
         let hValue = miniMax2(MAX_DEPTH-2, !whitesMove, this);
-        console.log(hValue);
+        console.warn("calculating for legal moves with hvalue:",hValue);
         if(hValue === 10000 || hValue === -10000){
             console.log("draw");
             return DRAW;

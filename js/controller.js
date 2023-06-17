@@ -29,14 +29,14 @@ $('#board').on('mousedown','.piece',(eventData)=>{
 
 $('#board').on('drop','.square',(eventData)=>{
     if($(eventData.target).hasClass('free') || $(eventData.target).hasClass('attack')){
-        movePiece(getCordinatesFromSquare($(eventData.target)));
+        movePiece(getCoordinatesFromSquare($(eventData.target)));
     }
     
 });
 
 $('#board').on('mousedown','.square',(eventData)=>{
     if($(eventData.target).hasClass('free') || $(eventData.target).hasClass('attack')){
-        movePiece(getCordinatesFromSquare($(eventData.target)));
+        movePiece(getCoordinatesFromSquare($(eventData.target)));
     };
 });
 
@@ -59,15 +59,10 @@ function selectPiece(coordinates){
 
 function movePiece(coordinates){
     let validationMessage = board.movePiece(selectedPieceCor ,coordinates);
-    specialSound = false;
     actionForValidation(validationMessage);
-    captured = board.captured;
-    console.log("captured?:", captured);
 
-    if (validationMessage === ILLEGAL_MOVE){
-        audNotify.play();
-        return;
-    }
+    playSound(validationMessage);
+    if (validationMessage === ILLEGAL_MOVE) return;
 
     let pieceDiv =  $(`.cr-${selectedPieceCor[0]}-${selectedPieceCor[1]} > div`);
     $(`.cr-${coordinates[0]}-${coordinates[1]}`).empty();
@@ -85,7 +80,7 @@ function movePiece(coordinates){
     });
 
 
-    playSound();
+
     if(validationMessage === WHITE_WIN) return;
 
     console.log("starting to evaluate AI move...");
@@ -113,7 +108,7 @@ function clear(){
 }
 
 
-function getCordinatesFromSquare(square){
+function getCoordinatesFromSquare(square){
     let col = square.attr('data-col');
     let row = square.attr('data-row');
 
@@ -122,17 +117,15 @@ function getCordinatesFromSquare(square){
 
 function getCoordinatesFromPiece(piece){
     let squareElm = piece.parent();
-    return getCordinatesFromSquare(squareElm);
+    return getCoordinatesFromSquare(squareElm);
 }
 
 function moveAiMove(aiSelectedCords, aiSelectedSquare){
     let validationMessage = board.movePiece( aiSelectedCords, aiSelectedSquare);
-    specialSound = false;
-    captured = false;
+
     actionForValidation(validationMessage);
-    captured = board.captured;
-    console.log("captured?:", captured);
-    playSound();
+    setTimeout(()=>playSound(validationMessage),1);
+
 
     if(validationMessage === ILLEGAL_MOVE) {
         console.info("AI played an Illegal move.")
@@ -145,48 +138,45 @@ function moveAiMove(aiSelectedCords, aiSelectedSquare){
 }
 
 function actionForValidation(validationMessage){
-    if(validationMessage){
+    console.info("taking action for validation message:",validationMessage);
         switch (validationMessage){
             case ILLEGAL_MOVE:
                 console.warn("illegal moves");
-                specialSound = ILLEGAL_MOVE;
                 break;
             case BLACK_IN_CHECK:
                 console.warn("black in check");
-                specialSound = BLACK_IN_CHECK;
                 break;
             case WHITE_IN_CHECK:
                 console.warn("white in check");
-                specialSound = WHITE_IN_CHECK;
                 break;
             case WHITE_WIN:
                 console.warn("white won!");
-                specialSound = WHITE_WIN;
                 break;
             case BLACK_WIN:
                 console.warn("black won!");
-                specialSound = BLACK_WIN;
                 break;
+            case WHITE_WIN:
+                console.warn("black won!");
+                break;
+            case SIMPLE_MOVE:
+                console.warn("regular move!");
+                break;
+            case CAPTURE:
+                console.log("captured!")
         }
-    }
 }
 
-function playSound(){
-    if(captured) audCapture.play();
-
-    switch (specialSound){
+function playSound(validationMessage){
+    console.info("playing sound for:",validationMessage);
+    switch (validationMessage){
         case ILLEGAL_MOVE: audNotify.play(); break;
         case BLACK_IN_CHECK : audCheck.play(); break;
         case WHITE_IN_CHECK: audCheck.play();break;
         case WHITE_WIN : audCheck.play(); audNotify.play(); break;
         case BLACK_WIN : audCheck.play(); audNotify.play(); break;
+        case SIMPLE_MOVE : audSelfMove.play(); break;
+        case CAPTURE: audCapture.play(); break;
     }
-
-    if(!specialSound && !captured) {
-        audSelfMove.play() ;
-    }
-
-
 }
 
 

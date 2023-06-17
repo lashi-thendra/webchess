@@ -8,6 +8,7 @@ export function aiMove(board) {
     let [selectPiece, selectedSquare] = miniMaxCaller(board);
     // console.warn(selectPiece, selectedSquare);
     // let [selectPiece, selectedSquare] = random(board);
+    // ToDo: call movePiece in board.
     return [[selectPiece.column, selectPiece.row], selectedSquare];
 
 }
@@ -42,7 +43,7 @@ function miniMaxCaller(board) {
     let calculateSquare;
     let pieces = [...board.blackPieces];
     
-    let value = 1000000000;
+    let value = Infinity;
     for (let i = 0; i < pieces.length; i++) {
         let piece = pieces[i];
         let pieceCords = [piece.column, piece.row];
@@ -66,7 +67,7 @@ function miniMaxCaller(board) {
             piece.column = sqr[0];
             piece.row = sqr[1];
 
-            // console.log("before minimax:", board.squares);
+            console.log("before minimax:", board.squares);
 
             let hVal = miniMax2(1, true, board);
 
@@ -97,13 +98,12 @@ function miniMaxCaller(board) {
 
 export function miniMax2(depth, maxPlayer, board) {
     if(depth===MAX_DEPTH){
-
         return heuristicValue(board);
     }
 
     let pieces = maxPlayer ? board.whitePieces : board.blackPieces;
     // let oppPieces = !maxPlayer ? board.blackPieces : board.whitePieces;
-    let value = maxPlayer ? -1000000000 : 1000000000;
+    let value = maxPlayer ? -Infinity : Infinity;
 
     if(maxPlayer){
         let piecesP = [...pieces];
@@ -187,6 +187,8 @@ export function miniMax2(depth, maxPlayer, board) {
         }
         return value;
     }
+
+
 }
 
 function heuristicValue(board){

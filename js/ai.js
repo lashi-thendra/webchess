@@ -67,7 +67,7 @@ function miniMaxCaller(board) {
             piece.column = sqr[0];
             piece.row = sqr[1];
 
-            console.log("before minimax:", board.squares);
+            // console.log("before minimax:", board.squares);
 
             let hVal = miniMax2(1, true, board);
 
@@ -77,9 +77,9 @@ function miniMaxCaller(board) {
                 value = hVal;
             }
 
-            // console.warn("piece=", piece);
-            // console.warn("hVal=", hVal, "Value", value,"board", board.squares);
-            // console.warn("---------------");
+            console.warn("piece=", piece);
+            console.warn("hVal=", hVal, "Value", value,"board", board.squares);
+            console.warn("---------------");
 
             board.squares[sqr[0]][sqr[1]] = removedPiece;
             board.squares[pieceCords[0]][pieceCords[1]] = piece;

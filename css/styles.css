@@ -26,10 +26,11 @@ section {
     border-top: 1px solid black;
 } */
 
-.square:hover{
+.white:hover{
     /* background-color: rgb(1, 180, 165); */
-    box-shadow: inset 0 0 100px rgba(1, 247, 255, 0.685);
+    cursor: pointer;
 }
+
 
 .piece{
     height: 100%;
@@ -50,10 +51,14 @@ div{
 }
 
 .attack{
-    box-shadow: inset 0 0 100px rgba(255, 1, 1, 0.685);
+    box-shadow: inset 0 0 100px rgba(255, 1, 1, 0.685) !important;
 }
 
 .free{
-    box-shadow: inset 0 0 100px rgba(1, 255, 221, 0.685);
+    box-shadow: inset 0 0 100px rgba(1, 255, 221, 0.685) !important;
+}
+
+.move{
+    box-shadow: inset 0 0 100px rgba(255, 208, 0, 0.7);
 }
 

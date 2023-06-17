@@ -5,8 +5,6 @@ const board = new Board();
 let emptySqrs = [];
 let enemySqrs = [];
 let selectedPieceCor = null;
-let specialSound = false;
-let captured = false;
 
 let audSelfMove = new Audio('./audio/move-self.mp3');
 let audCapture = new Audio('./audio/capture.mp3');
@@ -64,9 +62,15 @@ function movePiece(coordinates){
     playSound(validationMessage);
     if (validationMessage === ILLEGAL_MOVE) return;
 
+    $('.square').each((i,sqr)=>{
+        $(sqr).removeClass('move');
+    });
+
     let pieceDiv =  $(`.cr-${selectedPieceCor[0]}-${selectedPieceCor[1]} > div`);
+    pieceDiv.parent().addClass("move");
     $(`.cr-${coordinates[0]}-${coordinates[1]}`).empty();
     $(`.cr-${coordinates[0]}-${coordinates[1]}`).append(pieceDiv);
+    $(`.cr-${coordinates[0]}-${coordinates[1]}`).addClass("move");
 
     pieceDiv.css('left','0');
     pieceDiv.css('top','0');
@@ -132,9 +136,15 @@ function moveAiMove(aiSelectedCords, aiSelectedSquare){
         // ToDo: Display Something
     }
 
+    $('.square').each((i,sqr)=>{
+        $(sqr).removeClass('move');
+    });
+
     let pieceDiv =  $(`.cr-${aiSelectedCords[0]}-${aiSelectedCords[1]} > div`);
+    pieceDiv.parent().addClass("move");
     $(`.cr-${aiSelectedSquare[0]}-${aiSelectedSquare[1]}`).empty();
     $(`.cr-${aiSelectedSquare[0]}-${aiSelectedSquare[1]}`).append(pieceDiv);
+    $(`.cr-${aiSelectedSquare[0]}-${aiSelectedSquare[1]}`).addClass("move");
 }
 
 function actionForValidation(validationMessage){

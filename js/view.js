@@ -45,7 +45,7 @@ $('.white').each((i,elm)=>{
 
 function addPiece(color, pieceName, square){
     let pieceDiv = $('<div class="piece"></div>');
-    pieceDiv.css('background-image', `url(./img/${color}/${pieceName}.png)`);
+    pieceDiv.css('background-image', `url(../img/${color}/${pieceName}.png)`);
     pieceDiv.addClass(color);
     square.append(pieceDiv);
 }

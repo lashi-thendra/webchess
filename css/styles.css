@@ -7,11 +7,17 @@ header{
     /* background-color: blue; */
 }
 
+main > section{
+    float: left;
+    border: black 1px solid;
+}
+
+
 section {
     display: flex;
     height: 80vh;
     width: 80vh;
-    margin-left: 50px;
+    /*margin-left: 50px;*/
     background-color: yellow;
 }
 
@@ -51,14 +57,15 @@ div{
 }
 
 .attack{
-    box-shadow: inset 0 0 100px rgba(255, 1, 1, 0.685) !important;
+    box-shadow: inset 0 0 100px rgba(255, 1, 1, 0.4) !important;
 }
 
 .free{
-    box-shadow: inset 0 0 100px rgba(1, 255, 221, 0.685) !important;
+    box-shadow: inset 0 0 100px rgba(23, 85, 203, 0.4) !important;
 }
 
 .move{
-    box-shadow: inset 0 0 100px rgba(255, 208, 0, 0.7);
+
+    box-shadow: inset 0 0 100px rgba(23, 85, 203, 0.91);
 }
 

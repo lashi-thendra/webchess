@@ -87,7 +87,7 @@ export class Pawn extends Piece {
 
 
         [[this.column + 1, this.row + increment], [this.column - 1, this.row + increment]].forEach((square) => {
-            if (square[0] < 0 || square[0] > 7 || square[1] > 7) return;
+            if (square[0] < 0 || square[0] > 7 || square[1] > 7 || square[1] <0) return;
             if (!board.squares[square[0]][square[1]]) return;
             if (board.squares[square[0]][square[1]].isWhite != this.isWhite) caculatedSquares.push(square);
         })
@@ -176,7 +176,7 @@ export class Knight extends Piece {
         [[1, 2], [1, -2], [2, 1], [2, -1], [-1, 2], [-1, -2], [-2, 1], [-2, -1]].forEach(([i, j]) => {
             col = this.column + i;
             row = this.row + j;
-            if (col < 0 || col > 7 || row > 7) return;
+            if (col < 0 || col > 7 || row > 7 || row < 0) return;
             let underAttack = board.squares[col][row];
             if( !underAttack || (underAttack.isWhite !== this.isWhite))caculatedSquares.push([col, row]);
         });

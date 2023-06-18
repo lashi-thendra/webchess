@@ -5,6 +5,7 @@ const board = new Board();
 let emptySqrs = [];
 let enemySqrs = [];
 let selectedPieceCor = null;
+let humansTurn = true;
 
 let audSelfMove = new Audio('./audio/move-self.mp3');
 let audCapture = new Audio('./audio/capture.mp3');
@@ -12,6 +13,125 @@ let audCheck = new Audio('./audio/move-check.mp3');
 let audNotify = new Audio('./audio/notify.mp3');
 let audPromote = new Audio('./audio/promote.mp3');
 let displayElm = $('header > div');
+
+
+let chessTurnPhrases = [
+    '"Is it your move?"',
+    '"Would you like to make your chess move?"',
+    '"What\'s your next move?"',
+    '"Are you ready to play?"',
+    '"Do you have a move in mind?"',
+    '"Which piece will you move?"',
+    '"Are you prepared to make your chess play?"',
+    '"Shall we continue the game?"',
+    '"Is it time for your move?"',
+    '"Have you decided on your next chess action?"'
+];
+
+let aiCalculatingMessages = [
+    '"Analyzing possible moves..."',
+    '"AI is processing the best move..."',
+    '"Evaluating board positions..."',
+    '"AI is considering its options..."',
+    '"Please wait while AI calculates its move..."',
+    '"Generating optimal move..."',
+    '"Thinking strategically..."',
+    '"AI is analyzing game state..."',
+    '"Calculating the next move..."',
+    '"AI is determining its best course of action..."'
+];
+
+let aiUnderCheckMessages = [
+    "'Check!'",
+    "'You've put the opponent's king in check!'",
+    "'Your move has resulted in a check!'",
+    "'The opponent's king is in check!'",
+    "'Checkmate is getting closer!'",
+    "'Great move! Check!'",
+    "'Your strategic play has resulted in a check!'",
+    "'The opponent's king is now vulnerable!'",
+    "'Check! Your move has intensified the game!'",
+    "'Well done! The opponent's king is in check!'"
+];
+
+let humanUnderCheckMessages = [
+    "'You're under check!'",
+    "'Your king is in check!'",
+    "'Watch out! You're being checked!'",
+    "'Your opponent has put your king in check!'",
+    "'Be cautious! You're under check!'",
+    "'Protect your king! You're in check!'",
+    "'Opponent's move has resulted in a check on your king!'",
+    "'Your opponent has you in check!'",
+    "'Take action! You're under check!'",
+    "'Beware! Your king is under check!'"
+];
+
+let illegalMoveMessages = [
+    "'Illegal move!'",
+    "'Invalid move! Try again.'",
+    "'Oops! That move is not allowed.'",
+    "'You can't make that move.'",
+    "'Illegal move detected!'",
+    "'Sorry, that move is invalid.'",
+    "'Invalid move! Choose a different move.'",
+    "'Oops! That move is not permitted.'",
+    "'You're not allowed to make that move.'",
+    "'Illegal move! Please make a legal move.'"
+];
+
+
+let aiCapturePieceMessages = [
+    "'AI captured your piece!'",
+    "'You lost a piece to the AI!'",
+    "'AI successfully captured your piece!'",
+    "'Your piece was captured by the AI!'",
+    "'AI takes one of your pieces!'",
+    "'You've been outplayed. The AI captured your piece!'",
+    "'AI makes a decisive move, capturing your piece!'",
+    "'Your piece is now in the hands of the AI!'",
+    "'Watch out! AI just captured your piece!'",
+    "'The AI's capture leaves you at a disadvantage.'"
+];
+
+let humanWinMessages = [
+    "'Congratulations! You win!'",
+    "'Victory! You've defeated the AI!'",
+    "'Well done! You've emerged victorious!'",
+    "'You are the champion! You've won the game!'",
+    "'Human triumphs! You've achieved a stunning victory!'",
+    "'Bravo! Your strategic prowess leads to a win!'",
+    "'You outsmarted the AI and claim victory!'",
+    "'A splendid performance! You've won the game!'",
+    "'Hooray! You've achieved a decisive win!'",
+    "'You've emerged as the winner! Congratulations!'"
+];
+
+let aiWinMessages = [
+    "'AI wins! Better luck next time.'",
+    "'Defeat! The AI emerges victorious.'",
+    "'AI triumphs! You've been outmatched.'",
+    "'The AI reigns supreme. You've lost the game.'",
+    "'AI prevails! Your efforts were valiant, but not enough.'",
+    "'You've been defeated by the AI. Better luck next time.'",
+    "'The AI's strategic superiority leads to a win.'",
+    "'It's a win for the AI! Your opponent proves too strong.'",
+    "'The AI outwits you to claim the victory.'",
+    "'The AI celebrates its triumph as the winner.'"
+];
+
+let capturePieceMessages = [
+    "'You captured an opponent's piece!'",
+    "'Great move! You captured an opponent's piece!'",
+    "'Well done! You eliminated an opponent's piece!'",
+    "'You've successfully captured an opponent's piece!'",
+    "'Capturing the opponent's piece! Excellent move!'",
+    "'Your strategic play results in capturing an opponent's piece!'",
+    "'Piece captured! You gain an advantage over your opponent!'",
+    "'You've successfully eliminated an opponent's piece!'",
+    "'Capture! You make a decisive move, removing the opponent's piece!'",
+    "'Congratulations! You capture an opponent's piece with style!'"
+];
 
 //setting listeners
 $('#board').on('mousedown','.piece',(eventData)=>{
@@ -62,7 +182,6 @@ function movePiece(coordinates){
 
     playSound(validationMessage);
     if (validationMessage === ILLEGAL_MOVE) return;
-
     $('.square').each((i,sqr)=>{
         $(sqr).removeClass('move');
     });
@@ -89,10 +208,11 @@ function movePiece(coordinates){
     if(validationMessage === WHITE_WIN) return;
 
     console.log("starting to evaluate AI move...");
-    displayElm.text("AI is calculating the move......");
+    // displayElm.text("AI is calculating the move......");
 
     setTimeout(()=>{
         let aiCordsAndPiece = aiMove(board);
+        console.warn("moving the AI move", aiCordsAndPiece);
         moveAiMove(aiCordsAndPiece[0], aiCordsAndPiece[1]);
     },500);
 
@@ -132,11 +252,6 @@ function moveAiMove(aiSelectedCords, aiSelectedSquare){
     setTimeout(()=>playSound(validationMessage),1);
 
 
-    if(validationMessage === ILLEGAL_MOVE) {
-        console.info("AI played an Illegal move.")
-        // ToDo: Display Something
-    }
-
     $('.square').each((i,sqr)=>{
         $(sqr).removeClass('move');
     });
@@ -152,30 +267,79 @@ function actionForValidation(validationMessage){
     console.info("taking action for validation message:",validationMessage);
         switch (validationMessage){
             case ILLEGAL_MOVE:
-                console.warn("illegal moves");
+                console.warn("illegal move");
+                displayText(ILLEGAL_MOVE);
                 break;
             case BLACK_IN_CHECK:
                 console.warn("black in check");
+                displayText(BLACK_IN_CHECK);
+                humansTurn = !humansTurn;
                 break;
             case WHITE_IN_CHECK:
                 console.warn("white in check");
+                displayText(WHITE_IN_CHECK);
+                humansTurn = !humansTurn;
                 break;
             case WHITE_WIN:
                 console.warn("white won!");
+                displayText(WHITE_WIN);
+                humansTurn = !humansTurn;
                 break;
             case BLACK_WIN:
                 console.warn("black won!");
-                break;
-            case WHITE_WIN:
-                console.warn("black won!");
+                displayText(BLACK_WIN);
+                humansTurn = !humansTurn;
                 break;
             case SIMPLE_MOVE:
                 console.warn("regular move!");
-                displayElm.text('"Your turn"')
+                displayText(SIMPLE_MOVE);
+                humansTurn = !humansTurn;
                 break;
             case CAPTURE:
-                console.log("captured!")
+                console.log("captured!");
+                displayText(CAPTURE);
+                humansTurn = !humansTurn;
+                break;
         }
+
+}
+
+function displayText(validationMessage){
+    let text;
+    let index = Math.floor(Math.random()*10);
+    switch (validationMessage){
+        case SIMPLE_MOVE:
+            if(!humansTurn){
+                text = chessTurnPhrases[index];
+            }else{
+                text= aiCalculatingMessages[index];
+            }
+            break;
+        case BLACK_IN_CHECK:
+            text =aiUnderCheckMessages[index];
+            break;
+        case WHITE_IN_CHECK:
+            text =humanUnderCheckMessages[index];
+            break;
+        case ILLEGAL_MOVE:
+            text = illegalMoveMessages[index];
+            break;
+        case CAPTURE:
+            if(!humansTurn){
+                text = aiCapturePieceMessages[index];
+            }else{
+                text= capturePieceMessages[index];
+            }
+            break;
+        case WHITE_WIN:
+            text = humanWinMessages[index];
+            break;
+        case BLACK_WIN:
+            text = aiWinMessages[index]
+            break;
+    }
+
+    displayElm.text(text);
 }
 
 function playSound(validationMessage){

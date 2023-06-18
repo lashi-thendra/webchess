@@ -400,8 +400,8 @@ export class Board {
     noLegalMoves(whitesMove){
         let hValue = miniMax2(MAX_DEPTH-2, !whitesMove, this);
         console.warn("calculating for legal moves with hvalue:",hValue);
-        if(hValue === 10000 || hValue === -10000){
-            console.log("draw");
+        if(hValue === 9997 || hValue === -9997){
+            console.log("no legal moves");
             return DRAW;
         }
         else return false;

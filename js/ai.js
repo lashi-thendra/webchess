@@ -117,8 +117,8 @@ export function miniMax2(depth, maxPlayer, board) {
 
                 let removedPiece = board.squares[sqr[0]][sqr[1]];
                 if(removedPiece){
-                    if(removedPiece === board.blackKing) return 10000;
-                    if(removedPiece === board.whiteKing) return -10000;
+                    if(removedPiece === board.blackKing) return 10000-1*depth;
+                    if(removedPiece === board.whiteKing) return -10000+1*depth;
                     let index = board.blackPieces.indexOf(removedPiece);
                     board.blackPieces.splice(index,1);
 
@@ -159,8 +159,8 @@ export function miniMax2(depth, maxPlayer, board) {
 
                 let removedPiece = board.squares[sqr[0]][sqr[1]];
                 if(removedPiece){
-                    if(removedPiece === board.blackKing) return 10000;
-                    if(removedPiece === board.whiteKing) return -10000;
+                    if(removedPiece === board.blackKing) return 10000-1*depth;
+                    if(removedPiece === board.whiteKing) return -10000+1*depth;
                     let index = board.whitePieces.indexOf(removedPiece);
                     board.whitePieces.splice(index,1);
                 }

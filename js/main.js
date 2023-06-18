@@ -16,9 +16,9 @@ const QUEEN_VALUE = 9;
 const KING_VALUE = 100;
 
 
-const PAWN = 1;
-const ROOK = 2;
-const KNIGHT = 3;
-const BISHOP = 4;
-const QUEEN = 5;
-const KING = 6;
+const PAWN = "P";
+const ROOK = "R";
+const KNIGHT = "N";
+const BISHOP = "B";
+const QUEEN = "Q";
+const KING = "K";

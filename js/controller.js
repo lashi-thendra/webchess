@@ -1,5 +1,6 @@
 import {aiMove} from './ai.js';
 import {Board} from './carpenter.js';
+import {addToTable} from "./table-filler.js";
 
 const board = new Board();
 let emptySqrs = [];
@@ -179,12 +180,13 @@ function selectPiece(coordinates){
 function movePiece(coordinates){
     let validationMessage = board.movePiece(selectedPieceCor ,coordinates);
     actionForValidation(validationMessage);
-
     playSound(validationMessage);
     if (validationMessage === ILLEGAL_MOVE) return;
     $('.square').each((i,sqr)=>{
         $(sqr).removeClass('move');
     });
+
+    addToTable(validationMessage, selectedPieceCor, coordinates, board);
 
     let pieceDiv =  $(`.cr-${selectedPieceCor[0]}-${selectedPieceCor[1]} > div`);
     pieceDiv.parent().addClass("move");
@@ -255,6 +257,8 @@ function moveAiMove(aiSelectedCords, aiSelectedSquare){
     $('.square').each((i,sqr)=>{
         $(sqr).removeClass('move');
     });
+
+    addToTable(validationMessage, aiSelectedCords, aiSelectedSquare, board);
 
     let pieceDiv =  $(`.cr-${aiSelectedCords[0]}-${aiSelectedCords[1]} > div`);
     pieceDiv.parent().addClass("move");

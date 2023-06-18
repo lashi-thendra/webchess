@@ -1,33 +1,164 @@
 body{
+    font-family: 'Roboto', sans-serif;
     border-collapse: collapse;
-    margin: 0;
+    background-color: #2f2f2f;
+    overflow: hidden;
 }
 
 header{
     height: 15vh;
-    /* background-color: blue; */
 }
 
-main > section{
-    float: left;
-    border: black 1px solid;
+main{
+    width: 100vw;
+    height: 700px;
+    display: flex;
+    justify-content: space-evenly;
+    border: 1px solid #575757;
+    padding: 20px 0;
+    /*background-color: dodgerblue;*/
+}
+
+
+header > div{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    font-size: 40px;
+    color: white;
+    text-wrap: normal;
+    text-align: center;
+    line-height: 15vh;
 }
 
 
 #board {
     display: flex;
-    width: 500px;
-    height: 500px;
+    width: 700px;
+    height: 700px;
     /*margin-left: 50px;*/
-    background-color: yellow;
+    /*background-color: yellow;*/
 }
 
-@media (max-width: 600px) {
+#moves{
+    height: 700px;
+    background-color: #505050;
+    width: 700px;
+
+}
+
+footer{
+    position: absolute;
+    /*background-color: #81a36c;*/
+    height: 80px;
+    width: 100%;
+    bottom: 0;
+    flex-grow: 1;
+    /*margin: 10px;*/
+}
+
+#sign{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    text-align: right;
+    background-color: #020d4f;
+    color: #0080ff;
+    z-index: 111;
+    font-size: 20px;
+    border-radius: 8px;
+    padding: 10px;
+    margin:10px;
+}
+
+@media (max-width: 1400px) {
+
+    header{
+        font-size: 15px;
+    }
+
+    header > div{
+        font-size: 25px;
+    }
+
+    main{
+        height: 400px;
+    }
+
+    #board {
+        width: 400px;
+        height: 400px;
+    }
+
+    #moves{
+        /*flex-grow: 1;*/
+        width: 400px;
+        height: 400px;
+        /*background-color: #e70000;*/
+    }
+
+    #sign{
+        font-size: 10px;
+    }
+}
+
+
+@media (max-width: 800px) {
+
+    header{
+        font-size: 15px;
+    }
+
+    header > div{
+        font-size: 25px;
+    }
+
+    main{
+        height: 500px;
+    }
+
+    #board {
+        width: 500px;
+        height: 500px;
+    }
+
+    #moves{
+        display: none;
+        flex-grow: 1;
+        /*height: 400px;*/
+        /*background-color: #e70000;*/
+    }
+
+    #sign{
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 688px) {
+
+    header{
+        height: 100px;
+    }
+
+    main{
+        height: 100vw;
+        width: 100vw;
+    }
+
     #board {
         width: 100vw;
         height: 100vw;
     }
+
+    header > div{
+        font-size: 15px;
+    }
+
 }
+
+
+
+
 
 
 .col{
@@ -65,15 +196,15 @@ div{
     background-color: #f6f5e7;
 }
 
-.attack{
-    box-shadow: inset 0 0 100px rgba(255, 1, 1, 0.4) !important;
+.move{
+    box-shadow: inset 0 0 100px rgba(255, 222, 13, 0.6) !important;
 }
 
 .free{
-    box-shadow: inset 0 0 100px rgba(23, 85, 203, 0.4) !important;
+    box-shadow: inset 0 0 100px rgba(129, 211, 255, 0.58) !important;
 }
 
-.move{
+.attack{
 
     box-shadow: inset 0 0 100px rgba(23, 85, 203, 0.91);
 }

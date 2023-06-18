@@ -11,6 +11,7 @@ let audCapture = new Audio('./audio/capture.mp3');
 let audCheck = new Audio('./audio/move-check.mp3');
 let audNotify = new Audio('./audio/notify.mp3');
 let audPromote = new Audio('./audio/promote.mp3');
+let displayElm = $('header > div');
 
 //setting listeners
 $('#board').on('mousedown','.piece',(eventData)=>{
@@ -88,7 +89,7 @@ function movePiece(coordinates){
     if(validationMessage === WHITE_WIN) return;
 
     console.log("starting to evaluate AI move...");
-
+    displayElm.text("AI is calculating the move......");
 
     setTimeout(()=>{
         let aiCordsAndPiece = aiMove(board);
@@ -170,6 +171,7 @@ function actionForValidation(validationMessage){
                 break;
             case SIMPLE_MOVE:
                 console.warn("regular move!");
+                displayElm.text('"Your turn"')
                 break;
             case CAPTURE:
                 console.log("captured!")

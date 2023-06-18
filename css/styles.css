@@ -1,5 +1,6 @@
 body{
     border-collapse: collapse;
+    margin: 0;
 }
 
 header{
@@ -13,13 +14,21 @@ main > section{
 }
 
 
-section {
+#board {
     display: flex;
-    height: 80vh;
-    width: 80vh;
+    width: 500px;
+    height: 500px;
     /*margin-left: 50px;*/
     background-color: yellow;
 }
+
+@media (max-width: 600px) {
+    #board {
+        width: 100vw;
+        height: 100vw;
+    }
+}
+
 
 .col{
     display: flex;

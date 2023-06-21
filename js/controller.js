@@ -143,9 +143,13 @@ $('#board').on('mousedown','.piece',(eventData)=>{
         return;
     }
     if(selectedPieceCor) clear();
+
+    if($(eventData.target).hasClass('black')) return;
     selectedPieceCor = getCoordinatesFromPiece($(eventData.target));
     selectPiece(selectedPieceCor);
 });
+
+
 
 $('#board').on('drop','.square',(eventData)=>{
     if($(eventData.target).hasClass('free') || $(eventData.target).hasClass('attack')){

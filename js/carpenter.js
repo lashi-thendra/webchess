@@ -347,6 +347,13 @@ export class Board {
             return ILLEGAL_MOVE;
         }
 
+        if(piece instanceof Pawn){
+            if(coordinates[1] === 0|| coordinates[1] === 7){
+                piece.promote(this);
+                move = isWhite? PROMOTION_W : PROMOTION_B;
+            }
+        }
+
 
         let checkState = this.checkForCheck(isWhite);
         console.warn("check state:",checkState);
@@ -357,18 +364,19 @@ export class Board {
             if(checkState === WHITE_IN_CHECK) return BLACK_WIN;
             else return WHITE_WIN;
         };
-        console.warn("returning checkstate", checkState);
-        if(checkState) move =  checkState;
-        if(this.captured) move = CAPTURE;
+        console.warn("returning check state", checkState);
 
-        if(piece instanceof Pawn){
-            if(coordinates[1] === 0|| coordinates[1] === 7){
-                piece.promote(this);
-                move = isWhite? PROMOTION_W : PROMOTION_B;
-            }
+        if(this.captured) {
+            if(move === PROMOTION_W) move = PROMO_W_CAP;
+            else if(move ===PROMOTION_B) move = PROMO_B_CAP;
+            else move = CAPTURE;
         }
 
-
+        if(checkState){
+            if(move === PROMOTION_W || move === PROMO_W_CAP) move = PROMO_W_CHECK;
+            else if( move === PROMOTION_B || move === PROMO_B_CAP) move = PROMO_B_CHECK;
+            else move = checkState;
+        }
 
         return move;
     }

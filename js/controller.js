@@ -43,7 +43,7 @@ let aiCalculatingMessages = [
 ];
 
 let aiUnderCheckMessages = [
-    "'Check!'",
+
     "'You've put the opponent's king in check!'",
     "'Your move has resulted in a check!'",
     "'The opponent's king is in check!'",
@@ -195,7 +195,9 @@ function movePiece(coordinates){
 
     let pieceDiv =  $(`.cr-${selectedPieceCor[0]}-${selectedPieceCor[1]} > div`);
 
-    if (validationMessage === PROMOTION_W) pieceDiv.css('background-image', `url(img/white/queen.png)`);
+    if (validationMessage === PROMOTION_W ||
+     validationMessage === PROMO_W_CAP ||
+    validationMessage === PROMO_W_CHECK) pieceDiv.css('background-image', `url(img/white/queen.png)`);
 
 
 
@@ -271,7 +273,9 @@ function moveAiMove(aiSelectedCords, aiSelectedSquare){
     addToTable(validationMessage, aiSelectedCords, aiSelectedSquare, board);
 
     let pieceDiv =  $(`.cr-${aiSelectedCords[0]}-${aiSelectedCords[1]} > div`);
-    if (validationMessage === PROMOTION_B) pieceDiv.css('background-image', `url(img/black/queen.png)`);
+    if (validationMessage === PROMOTION_B ||
+        validationMessage === PROMO_B_CAP ||
+        validationMessage === PROMO_B_CHECK) pieceDiv.css('background-image', `url(img/black/queen.png)`);
     pieceDiv.parent().addClass("move");
     $(`.cr-${aiSelectedSquare[0]}-${aiSelectedSquare[1]}`).empty();
     $(`.cr-${aiSelectedSquare[0]}-${aiSelectedSquare[1]}`).append(pieceDiv);
@@ -286,11 +290,13 @@ function actionForValidation(validationMessage){
                 displayText(ILLEGAL_MOVE);
                 break;
             case BLACK_IN_CHECK:
+            case PROMO_W_CHECK:
                 console.warn("black in check");
                 displayText(BLACK_IN_CHECK);
                 humansTurn = !humansTurn;
                 break;
             case WHITE_IN_CHECK:
+            case PROMO_B_CHECK :
                 console.warn("white in check");
                 displayText(WHITE_IN_CHECK);
                 humansTurn = !humansTurn;
@@ -311,11 +317,13 @@ function actionForValidation(validationMessage){
                 humansTurn = !humansTurn;
                 break;
             case CAPTURE:
+            case PROMO_W_CAP:
+            case PROMO_B_CAP:
                 console.log("captured!");
                 displayText(CAPTURE);
                 humansTurn = !humansTurn;
                 break;
-            case PROMOTION_W:
+            case PROMOTION_W :
                 console.log("promoted to white queen");
                 displayText(SIMPLE_MOVE);
                 humansTurn = !humansTurn;
@@ -371,12 +379,18 @@ function playSound(validationMessage){
     console.info("playing sound for:",validationMessage);
     switch (validationMessage){
         case ILLEGAL_MOVE: audNotify.play(); break;
-        case BLACK_IN_CHECK : audCheck.play(); break;
-        case WHITE_IN_CHECK: audCheck.play();break;
+        case BLACK_IN_CHECK:
+        case PROMO_W_CHECK : audCheck.play(); break;
+        case WHITE_IN_CHECK :
+        case PROMO_B_CHECK: audCheck.play();break;
         case WHITE_WIN : audCheck.play(); audNotify.play(); break;
         case BLACK_WIN : audCheck.play(); audNotify.play(); break;
-        case SIMPLE_MOVE : audSelfMove.play(); break;
-        case CAPTURE: audCapture.play(); break;
+        case SIMPLE_MOVE:
+        case PROMOTION_W:
+        case PROMOTION_B : audSelfMove.play(); break;
+        case CAPTURE:
+        case PROMO_B_CAP:
+        case PROMO_W_CAP : audCapture.play(); break;
         case PROMOTION_B: audPromote.play(); break;
         case PROMOTION_W: audPromote.play(); break;
     }

@@ -6,9 +6,12 @@ const BLACK_IN_CHECK = "black in check";
 const DRAW = "draw";
 const BLACK_WIN = "black win";
 const WHITE_WIN = "white win";
-const PROMOTION_W = 'promotion';
-const PROMOTION_B = 'black';
-
+const PROMOTION_W = 'white promotion';
+const PROMOTION_B = 'black promotion';
+const PROMO_W_CHECK = 'white promo + check';
+const PROMO_B_CHECK = 'black promo + check';
+const PROMO_W_CAP = 'white promo + capture';
+const PROMO_B_CAP = 'black promo + capture';
 
 const PAWN_VALUE = 1;
 const ROOK_VALUE = 5;

@@ -143,7 +143,6 @@ $('#board').on('mousedown','.piece',(eventData)=>{
         return;
     }
     if(selectedPieceCor) clear();
-
     if($(eventData.target).hasClass('black')) return;
     selectedPieceCor = getCoordinatesFromPiece($(eventData.target));
     selectPiece(selectedPieceCor);
@@ -183,9 +182,11 @@ function selectPiece(coordinates){
 
 function movePiece(coordinates){
     let validationMessage = board.movePiece(selectedPieceCor ,coordinates);
+    console.log("received message:", validationMessage);
     actionForValidation(validationMessage);
     playSound(validationMessage);
     if (validationMessage === ILLEGAL_MOVE) return;
+
     $('.square').each((i,sqr)=>{
         $(sqr).removeClass('move');
     });
@@ -193,6 +194,11 @@ function movePiece(coordinates){
     addToTable(validationMessage, selectedPieceCor, coordinates, board);
 
     let pieceDiv =  $(`.cr-${selectedPieceCor[0]}-${selectedPieceCor[1]} > div`);
+
+    if (validationMessage === PROMOTION_W) pieceDiv.css('background-image', `url(img/white/queen.png)`);
+
+
+
     pieceDiv.parent().addClass("move");
     $(`.cr-${coordinates[0]}-${coordinates[1]}`).empty();
     $(`.cr-${coordinates[0]}-${coordinates[1]}`).append(pieceDiv);
@@ -265,6 +271,7 @@ function moveAiMove(aiSelectedCords, aiSelectedSquare){
     addToTable(validationMessage, aiSelectedCords, aiSelectedSquare, board);
 
     let pieceDiv =  $(`.cr-${aiSelectedCords[0]}-${aiSelectedCords[1]} > div`);
+    if (validationMessage === PROMOTION_B) pieceDiv.css('background-image', `url(img/black/queen.png)`);
     pieceDiv.parent().addClass("move");
     $(`.cr-${aiSelectedSquare[0]}-${aiSelectedSquare[1]}`).empty();
     $(`.cr-${aiSelectedSquare[0]}-${aiSelectedSquare[1]}`).append(pieceDiv);
@@ -306,6 +313,16 @@ function actionForValidation(validationMessage){
             case CAPTURE:
                 console.log("captured!");
                 displayText(CAPTURE);
+                humansTurn = !humansTurn;
+                break;
+            case PROMOTION_W:
+                console.log("promoted to white queen");
+                displayText(SIMPLE_MOVE);
+                humansTurn = !humansTurn;
+                break;
+            case PROMOTION_B:
+                console.log("promoted to black queen");
+                displayText(SIMPLE_MOVE);
                 humansTurn = !humansTurn;
                 break;
         }
@@ -360,6 +377,8 @@ function playSound(validationMessage){
         case BLACK_WIN : audCheck.play(); audNotify.play(); break;
         case SIMPLE_MOVE : audSelfMove.play(); break;
         case CAPTURE: audCapture.play(); break;
+        case PROMOTION_B: audPromote.play(); break;
+        case PROMOTION_W: audPromote.play(); break;
     }
 }
 

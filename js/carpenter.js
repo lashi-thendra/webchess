@@ -62,11 +62,6 @@ export class Piece {
         this.column = this.previousSquare[0];
         this.row = this.previousSquare[1];
     }
-
-    restore(board) {
-        board.squares[this.column][this.row] = this;
-    }
-
 }
 
 export class Pawn extends Piece {
@@ -76,23 +71,33 @@ export class Pawn extends Piece {
     getAttackingSquares(board) {
         let increment = (this.isWhite) ? 1 : -1;
 
-        let caculatedSquares = [];
+        let calculatedSquares = [];
 
         for (let i = 1; i < 3; i++) {
-            let targetSqure = [this.column, this.row + increment * i];
+            let targetSquare = [this.column, this.row + increment * i];
             if (board.squares[this.column][this.row + increment * i]) break;
             if (i === 2 && !this.isFirstMove) break;
-            caculatedSquares.push(targetSqure);
+            calculatedSquares.push(targetSquare);
         }
 
 
         [[this.column + 1, this.row + increment], [this.column - 1, this.row + increment]].forEach((square) => {
             if (square[0] < 0 || square[0] > 7 || square[1] > 7 || square[1] <0) return;
             if (!board.squares[square[0]][square[1]]) return;
-            if (board.squares[square[0]][square[1]].isWhite != this.isWhite) caculatedSquares.push(square);
+            if (board.squares[square[0]][square[1]].isWhite !== this.isWhite) calculatedSquares.push(square);
         })
 
-        return caculatedSquares;
+        return calculatedSquares;
+    }
+
+    promote(board){
+        let newQueen = new Queen(this.isWhite, this.row, this.column);
+        board.squares[this.column][this.row] = newQueen;
+        let pieceSet = this.isWhite? board.whitePieces: board.blackPieces;
+        let index = pieceSet.indexOf(this);
+        pieceSet[index] = newQueen;
+
+
     }
 }
 
@@ -191,7 +196,7 @@ export class Queen extends Piece {
     }
     getAttackingSquares(board) {
         let piece;
-        let caculatedSquares = [];
+        let calculatedSquares = [];
         let squares = board.squares;
         let x = this.column;
         let y = this.row;
@@ -202,16 +207,16 @@ export class Queen extends Piece {
             let t = 1;
             while (x + i * t >= 0 && x + i * t <= 7 && y + j * t >= 0 && y + j * t <= 7) {
                 piece = squares[x + i * t][y + j * t];
-                if (!piece) caculatedSquares.push([x + i * t, y + j * t]);
+                if (!piece) calculatedSquares.push([x + i * t, y + j * t]);
                 else if (piece.isWhite != this.isWhite) {
-                    caculatedSquares.push([x + i * t, y + j * t]);
+                    calculatedSquares.push([x + i * t, y + j * t]);
                     break;
                 }
                 else break;
                 t += 1;
             }
         });
-        return caculatedSquares;
+        return calculatedSquares;
     }
 }
 
@@ -331,14 +336,17 @@ export class Board {
 
     movePiece(selectedPieceCor, coordinates) {
 
+        console.log("starting to evaluate the move in the board(controller)")
         let piece = this.squares[selectedPieceCor[0]][selectedPieceCor[1]];
         let isWhite = piece.isWhite;
+        let move = SIMPLE_MOVE;
         piece.move(coordinates, this);
         if (this.kingUnderAttack(isWhite)) {
             console.log("illegal move");
             piece.undoMove(this);
             return ILLEGAL_MOVE;
         }
+
 
         let checkState = this.checkForCheck(isWhite);
         console.warn("check state:",checkState);
@@ -350,9 +358,19 @@ export class Board {
             else return WHITE_WIN;
         };
         console.warn("returning checkstate", checkState);
-        if(checkState) return checkState;
-        if(this.captured) return CAPTURE;
-        return SIMPLE_MOVE;
+        if(checkState) move =  checkState;
+        if(this.captured) move = CAPTURE;
+
+        if(piece instanceof Pawn){
+            if(coordinates[1] === 0|| coordinates[1] === 7){
+                piece.promote(this);
+                move = isWhite? PROMOTION_W : PROMOTION_B;
+            }
+        }
+
+
+
+        return move;
     }
 
     kingUnderAttack(isWhite) {
@@ -398,6 +416,7 @@ export class Board {
     }
 
     noLegalMoves(whitesMove){
+
         let hValue = miniMax2(MAX_DEPTH-2, !whitesMove, this);
         console.warn("calculating for legal moves with hvalue:",hValue);
         if(hValue === 9997 || hValue === -9997){

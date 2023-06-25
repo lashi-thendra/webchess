@@ -5,9 +5,9 @@ export const MAX_DEPTH = 4;
 export function aiMove(board) {
 
 
-    let [selectPiece, selectedSquare] = miniMaxCaller(board);
+    // let [selectPiece, selectedSquare] = miniMaxCaller(board);
     // console.warn(selectPiece, selectedSquare);
-    // let [selectPiece, selectedSquare] = random(board);
+    let [selectPiece, selectedSquare] = random(board);
     // ToDo: call movePiece in board.
     return [[selectPiece.column, selectPiece.row], selectedSquare];
 
@@ -21,6 +21,7 @@ function testing(board){
 
 
 function random(board) {
+    console.log("squares", board);
     let blackPieces = board.blackPieces;
     let numberOfBlackPieces = blackPieces.length;
     let number = Math.floor(Math.random() * numberOfBlackPieces);

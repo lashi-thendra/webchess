@@ -1,13 +1,13 @@
 
 
-export const MAX_DEPTH = 4;
+export const MAX_DEPTH = 5;
 
 export function aiMove(board) {
 
 
-    // let [selectPiece, selectedSquare] = miniMaxCaller(board);
+    let [selectPiece, selectedSquare] = miniMaxCaller(board);
     // console.warn(selectPiece, selectedSquare);
-    let [selectPiece, selectedSquare] = random(board);
+    // let [selectPiece, selectedSquare] = random(board);
     // ToDo: call movePiece in board.
     return [[selectPiece.column, selectPiece.row], selectedSquare];
 
@@ -70,7 +70,7 @@ function miniMaxCaller(board) {
 
             // console.log("before minimax:", board.squares);
 
-            let hVal = miniMax2(1, true, board);
+            let hVal = miniMax2(1,-Infinity, +Infinity, true, board);
 
             if(hVal <= value){
                 calculatedPiece = piece;
@@ -97,7 +97,7 @@ function miniMaxCaller(board) {
     return [calculatedPiece, calculateSquare];
 }
 
-export function miniMax2(depth, maxPlayer, board) {
+export function miniMax2(depth,alpha, beta, maxPlayer, board) {
     if(depth===MAX_DEPTH){
         return heuristicValue(board);
     }
@@ -131,7 +131,8 @@ export function miniMax2(depth, maxPlayer, board) {
                 piece.row = sqr[1];
 
 
-                let hVal = miniMax2(depth+1, false, board);
+                let hVal = miniMax2(depth+1,alpha, beta, false, board);
+                alpha = Math.max(alpha, hVal);
 
                 if(hVal > value){
                     value = hVal;
@@ -143,6 +144,11 @@ export function miniMax2(depth, maxPlayer, board) {
 
                 if(removedPiece){
                     board.blackPieces.push(removedPiece);
+                }
+
+                if( alpha >= beta){
+                    break;
+
                 }
             }
         }
@@ -171,11 +177,14 @@ export function miniMax2(depth, maxPlayer, board) {
                 piece.column = sqr[0];
                 piece.row = sqr[1];
 
-                let hVal = miniMax2(depth+1, true, board);
+                let hVal = miniMax2(depth+1,alpha, beta, true, board);
 
                 if(hVal < value){
                     value = hVal;
                 }
+
+                beta = Math.min(hVal, beta);
+
                 board.squares[sqr[0]][sqr[1]] = removedPiece;
                 board.squares[pieceCords[0]][pieceCords[1]] = piece;
                 piece.column = pieceCords[0];
@@ -183,6 +192,11 @@ export function miniMax2(depth, maxPlayer, board) {
 
                 if(removedPiece){
                     board.whitePieces.push(removedPiece);
+                }
+
+                if( alpha >= beta){
+                    break;
+
                 }
             }
         }

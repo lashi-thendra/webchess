@@ -89,6 +89,7 @@ footer{
 
 #settings{
     position: absolute;
+    padding-left: 10px;
     top: 0;
     color: rgb(131, 131, 131);
     transform: translateY(-120%);

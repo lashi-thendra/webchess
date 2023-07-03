@@ -1,4 +1,4 @@
-import {aiMove} from './ai.js';
+import {getAiMove} from './ai.js';
 import {Board} from './carpenter.js';
 import {addToTable} from "./table-filler.js";
 
@@ -225,7 +225,7 @@ function movePiece(coordinates){
     // displayElm.text("AI is calculating the move......");
 
     setTimeout(()=>{
-        let aiCordsAndPiece = aiMove(board);
+        let aiCordsAndPiece = getAiMove(board);
         console.warn("moving the AI move", aiCordsAndPiece);
         moveAiMove(aiCordsAndPiece[0], aiCordsAndPiece[1]);
     },500);

@@ -18,7 +18,7 @@ export function addToTable(validationMessage, selectedPieceCor, coordinates, boa
     }
 
     let endingCol = letterFromCol(coordinates[0]);
-    let endingRow = coordinates[1];
+    let endingRow = coordinates[1]+1;
 
 
     if(validationMessage === WHITE_IN_CHECK || validationMessage === BLACK_IN_CHECK){

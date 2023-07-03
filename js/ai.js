@@ -1,15 +1,43 @@
 
 
 export const MAX_DEPTH = 5;
+let aiMove;
 
-export function aiMove(board) {
+
+export function getAiMove(board) {
+
+    const EFN = generateEFN(board);
+
+    const jqxhr = 
+    $.ajax(`http://www.chessdb.cn/cdb.php?action=query&board=${EFN}%20b%20-%20-%200%201`, 
+    {
+        method: 'GET',
+        async: false
+    });
+
+    jqxhr.done((response)=> {
+        if(response.startsWith("move")){
+            // pick a randome move
+            console.warn("selecting a one - from chessdb");
+            // let index = Math.floor(Math.random()*moves.length);
+            console.log(response);
+            aiMove = convertUciToArray(response.substring(5,9));
 
 
-    let [selectPiece, selectedSquare] = miniMaxCaller(board);
-    // console.warn(selectPiece, selectedSquare);
-    // let [selectPiece, selectedSquare] = random(board);
+        }else{
+            console.warn("no moves from chessdb")
+            let [selectPiece, selectedSquare] = miniMaxCaller(board);
+            aiMove =  [[selectPiece.column, selectPiece.row], selectedSquare];
+        }
+  
+    });
+    jqxhr.fail(()=> {
+        console.warn("chessdb query failed");
+        let [selectPiece, selectedSquare] = miniMaxCaller(board);
+        aiMove = [[selectPiece.column, selectPiece.row], selectedSquare];
+    });
 
-    return [[selectPiece.column, selectPiece.row], selectedSquare];
+    return aiMove;
 
 }
 
@@ -216,4 +244,44 @@ function heuristicValue(board){
     })
     // if (value)console.warn("heuristicValue",value);
     return value;
+}
+
+function generateEFN(board){
+    let outPut = "";
+    let emptyCount = 0 ;
+    let squares = board.squares;
+
+    for (let j = 7; j >= 0; j--) {
+        emptyCount = 0;
+        for (let i = 0; i < 8; i++) {
+            let piece = squares[i][j];
+            if(piece){
+                let letter = piece.firstLetter;
+                if(!piece.isWhite) letter = letter.toLowerCase();
+                if(emptyCount > 0) outPut += emptyCount;
+                outPut += letter;
+                emptyCount = 0;
+            }else{
+                emptyCount ++;
+            }
+        }
+        if(emptyCount > 0){
+            outPut += emptyCount;
+        } 
+        if(j !== 0 ) outPut += "/";
+    }
+    return outPut;
+}
+
+function convertUciToArray(uci){
+    console.log(uci);
+    const fileMap = { a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7 };
+    let fromFile = fileMap[uci.charAt(0)];
+    let fromRank = +uci.charAt(1)-1;
+    let toFile = fileMap[uci.charAt(2)];
+    let toRank = +uci.charAt(3)-1;
+
+    console.log([fromFile, fromRank], [toFile, toRank]);
+    return [[fromFile, fromRank], [toFile, toRank]];
+
 }

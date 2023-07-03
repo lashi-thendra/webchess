@@ -10,9 +10,10 @@ export class Piece {
     jqObj;
     previousSquare;
     isFirstMove;
+    firstLetter;
 
 
-    constructor(isWhite, row, column, value, type) {
+    constructor(isWhite, row, column, value, type, firstLetter) {
         this.isWhite = isWhite;
         this.row = row;
         this.column = column;
@@ -20,6 +21,7 @@ export class Piece {
         this.type = type;
         this.previousSquare = null;
         this.isFirstMove = true;
+        this.firstLetter = firstLetter;
     }
 
     move(coordinates, board) {
@@ -66,7 +68,7 @@ export class Piece {
 
 export class Pawn extends Piece {
     constructor(isWhite, row, column) {
-        super(isWhite, row, column, PAWN_VALUE, PAWN);
+        super(isWhite, row, column, PAWN_VALUE, PAWN, "P");
     }
     getAttackingSquares(board) {
         let increment = (this.isWhite) ? 1 : -1;
@@ -104,7 +106,7 @@ export class Pawn extends Piece {
 export class Rook extends Piece {
     isFirstMove;
     constructor(isWhite, row, column) {
-        super(isWhite, row, column, ROOK_VALUE, ROOK);
+        super(isWhite, row, column, ROOK_VALUE, ROOK, "R");
     }
     getAttackingSquares(board) {
         let piece;
@@ -136,7 +138,7 @@ export class Rook extends Piece {
 
 export class Bishop extends Piece {
     constructor(isWhite, row, column) {
-        super(isWhite, row, column, BISHOP_VALUE, BISHOP);
+        super(isWhite, row, column, BISHOP_VALUE, BISHOP, "B");
     }
 
     getAttackingSquares(board) {
@@ -170,7 +172,7 @@ export class Bishop extends Piece {
 export class Knight extends Piece {
     isFirstMove;
     constructor(isWhite, row, column) {
-        super(isWhite, row, column, KNIGHT_VALUE, KNIGHT);
+        super(isWhite, row, column, KNIGHT_VALUE, KNIGHT,"N");
     }
     getAttackingSquares(board) {
 
@@ -192,7 +194,7 @@ export class Knight extends Piece {
 
 export class Queen extends Piece {
     constructor(isWhite, row, column) {
-        super(isWhite, row, column, QUEEN_VALUE, QUEEN);
+        super(isWhite, row, column, QUEEN_VALUE, QUEEN,"Q");
     }
     getAttackingSquares(board) {
         let piece;
@@ -222,7 +224,7 @@ export class Queen extends Piece {
 
 export class King extends Piece {
     constructor(isWhite, row, column) {
-        super(isWhite, row, column, KING_VALUE, KING);
+        super(isWhite, row, column, KING_VALUE, KING,"K");
     }
     getAttackingSquares(board) {
         let piece;

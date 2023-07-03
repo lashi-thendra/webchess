@@ -3,6 +3,7 @@ body{
     border-collapse: collapse;
     background-color: #2f2f2f;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 header{
@@ -86,15 +87,17 @@ footer{
     margin:10px;
 }
 
-#gear-container{
-
-    height: 100%;
-    color: white;
-
+#settings{
     position: absolute;
-    /* background-color: yellow; */
-    
+    top: 0;
+    color: rgb(131, 131, 131);
+    transform: translateY(-120%);
+    font-size: 20px;
 }
+
+
+
+
 
 table{
     /*background-color: yellow;*/

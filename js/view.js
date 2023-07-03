@@ -39,6 +39,9 @@ $('.white').each((i,elm)=>{
     });
 });
 
+$("#gear-container").on("click",()=>{
+    
+});
 
 
 

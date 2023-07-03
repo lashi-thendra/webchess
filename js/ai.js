@@ -8,20 +8,20 @@ export function aiMove(board) {
     let [selectPiece, selectedSquare] = miniMaxCaller(board);
     // console.warn(selectPiece, selectedSquare);
     // let [selectPiece, selectedSquare] = random(board);
-    // ToDo: call movePiece in board.
+
     return [[selectPiece.column, selectPiece.row], selectedSquare];
 
 }
 
 function testing(board){
     board.blackPieces.forEach(p=>{
-        console.log(p.getAttackingSquares(board));
+        // console.log(p.getAttackingSquares(board));
     });
 }
 
 
 function random(board) {
-    console.log("squares", board);
+    // console.log("squares", board);
     let blackPieces = board.blackPieces;
     let numberOfBlackPieces = blackPieces.length;
     let number = Math.floor(Math.random() * numberOfBlackPieces);
@@ -99,6 +99,7 @@ function miniMaxCaller(board) {
 
 export function miniMax2(depth,alpha, beta, maxPlayer, board) {
     if(depth===MAX_DEPTH){
+        // console.log("calling h value calculator for the",maxPlayer?"white":"black", "player at depth", depth);
         return heuristicValue(board);
     }
 
@@ -129,7 +130,6 @@ export function miniMax2(depth,alpha, beta, maxPlayer, board) {
                 board.squares[sqr[0]][sqr[1]] = piece;
                 piece.column = sqr[0];
                 piece.row = sqr[1];
-
 
                 let hVal = miniMax2(depth+1,alpha, beta, false, board);
                 alpha = Math.max(alpha, hVal);
@@ -176,7 +176,7 @@ export function miniMax2(depth,alpha, beta, maxPlayer, board) {
                 board.squares[sqr[0]][sqr[1]] = piece;
                 piece.column = sqr[0];
                 piece.row = sqr[1];
-
+                
                 let hVal = miniMax2(depth+1,alpha, beta, true, board);
 
                 if(hVal < value){
@@ -215,6 +215,5 @@ function heuristicValue(board){
         value += p.value;
     })
     // if (value)console.warn("heuristicValue",value);
-
     return value;
 }

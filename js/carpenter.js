@@ -426,12 +426,16 @@ export class Board {
     noLegalMoves(whitesMove){
 
         let hValue = miniMax2(MAX_DEPTH-2, -Infinity , Infinity,!whitesMove, this);
-        // console.warn("calculating for legal moves with hvalue:",hValue);
-        if(hValue === 9997 || hValue === -9997){
-            // console.log("no legal moves");
+        console.warn("calculating for legal moves with hvalue:",hValue);
+        if(hValue === 10001 - MAX_DEPTH || hValue === -10001 + MAX_DEPTH){
+            console.log("no legal moves");
             return DRAW;
         }
-        else return false;
+        
+        else{
+            console.log("has legal moves for", whitesMove?"black":"white");
+            return false;
+        } 
     }
 
 }

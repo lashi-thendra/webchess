@@ -1,4 +1,4 @@
-import {MAX_DEPTH, miniMax2} from "./ai.js";
+import { miniMax2} from "./ai.js";
 
 
 export class Piece {
@@ -427,9 +427,9 @@ export class Board {
 
     noLegalMoves(whitesMove){
 
-        let hValue = miniMax2(MAX_DEPTH-2, -Infinity , Infinity,!whitesMove, this);
+        let hValue = miniMax2(maxDepth-2, -Infinity , Infinity,!whitesMove, this);
         console.warn("calculating for legal moves with hvalue:",hValue);
-        if(hValue === 10001 - MAX_DEPTH || hValue === -10001 + MAX_DEPTH){
+        if(hValue === 10001 - maxDepth || hValue === -10001 + maxDepth){
             console.log("no legal moves");
             return DRAW;
         }

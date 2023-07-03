@@ -27,3 +27,6 @@ const KNIGHT = "N";
 const BISHOP = "B";
 const QUEEN = "Q";
 const KING = "K";
+
+let maxDepth = 3;
+let gameInOn = true;

@@ -136,6 +136,11 @@ let capturePieceMessages = [
 
 //setting listeners
 $('#board').on('mousedown','.piece',(eventData)=>{
+    if(!gameInOn){
+        audNotify.play();
+        return;
+        
+    } 
     eventData.stopPropagation();
 
     if($(eventData.target).parent().hasClass('attack')){
@@ -163,6 +168,11 @@ $('#board').on('mousedown','.square',(eventData)=>{
     };
 });
 
+$("#settings").on("click",()=>{
+    maxDepth++;
+    if(maxDepth === 6) maxDepth = 2;
+    $('#settings > span').text(maxDepth);
+})
 
 
 function selectPiece(coordinates){
@@ -366,9 +376,11 @@ function displayText(validationMessage){
             break;
         case WHITE_WIN:
             text = humanWinMessages[index];
+            gameInOn = false;
             break;
         case BLACK_WIN:
-            text = aiWinMessages[index]
+            text = aiWinMessages[index];
+            gameInOn = false;
             break;
     }
 
@@ -395,6 +407,8 @@ function playSound(validationMessage){
         case PROMOTION_W: audPromote.play(); break;
     }
 }
+
+
 
 
 

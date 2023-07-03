@@ -1,6 +1,6 @@
 
 
-export const MAX_DEPTH = 5;
+
 let aiMove;
 
 
@@ -126,7 +126,7 @@ function miniMaxCaller(board) {
 }
 
 export function miniMax2(depth,alpha, beta, maxPlayer, board) {
-    if(depth===MAX_DEPTH){
+    if(depth===maxDepth){
         // console.log("calling h value calculator for the",maxPlayer?"white":"black", "player at depth", depth);
         return heuristicValue(board);
     }

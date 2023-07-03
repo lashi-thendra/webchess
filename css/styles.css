@@ -93,6 +93,8 @@ footer{
     color: rgb(131, 131, 131);
     transform: translateY(-120%);
     font-size: 20px;
+    /* background-color: blue; */
+    cursor: pointer;
 }
 
 

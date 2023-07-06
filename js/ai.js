@@ -1,43 +1,47 @@
 
 
 
-let aiMove;
+// let aiMove;
 
 
 export function getAiMove(board) {
 
-    const EFN = generateEFN(board);
+    // const EFN = generateEFN(board);
 
-    const jqxhr = 
-    $.ajax(`http://www.chessdb.cn/cdb.php?action=query&board=${EFN}%20b%20-%20-%200%201`, 
-    {
-        method: 'GET',
-        async: false
-    });
+    // const jqxhr = 
+    // $.ajax(`http://www.chessdb.cn/cdb.php?action=query&board=${EFN}%20b%20-%20-%200%201`, 
+    // {
+    //     method: 'GET',
+    //     async: false
+    // });
 
-    jqxhr.done((response)=> {
-        if(response.startsWith("move")){
-            // pick a randome move
-            console.warn("selecting a one - from chessdb");
-            // let index = Math.floor(Math.random()*moves.length);
-            console.log(response);
-            aiMove = convertUciToArray(response.substring(5,9));
+    // jqxhr.done((response)=> {
+    //     if(response.startsWith("move")){
+    //         // pick a randome move
+    //         console.warn("selecting a one - from chessdb");
+    //         // let index = Math.floor(Math.random()*moves.length);
+    //         console.log(response);
+    //         aiMove = convertUciToArray(response.substring(5,9));
 
 
-        }else{
-            console.warn("no moves from chessdb")
-            let [selectPiece, selectedSquare] = miniMaxCaller(board);
-            aiMove =  [[selectPiece.column, selectPiece.row], selectedSquare];
-        }
+    //     }else{
+    //         console.warn("no moves from chessdb")
+    //         let [selectPiece, selectedSquare] = miniMaxCaller(board);
+    //         aiMove =  [[selectPiece.column, selectPiece.row], selectedSquare];
+    //     }
   
-    });
-    jqxhr.fail(()=> {
-        console.warn("chessdb query failed");
-        let [selectPiece, selectedSquare] = miniMaxCaller(board);
-        aiMove = [[selectPiece.column, selectPiece.row], selectedSquare];
-    });
+    // });
+    // jqxhr.fail(()=> {
+    //     console.warn("chessdb query failed");
+    //     let [selectPiece, selectedSquare] = miniMaxCaller(board);
+    //     aiMove = [[selectPiece.column, selectPiece.row], selectedSquare];
+    // });
 
-    return aiMove;
+    // return aiMove;
+
+    let [selectPiece, selectedSquare] = miniMaxCaller(board);
+        
+    return  [[selectPiece.column, selectPiece.row], selectedSquare];
 
 }
 

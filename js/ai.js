@@ -1,43 +1,8 @@
 
 
 
-// let aiMove;
-
 
 export function getAiMove(board) {
-
-    // const EFN = generateEFN(board);
-
-    // const jqxhr = 
-    // $.ajax(`http://www.chessdb.cn/cdb.php?action=query&board=${EFN}%20b%20-%20-%200%201`, 
-    // {
-    //     method: 'GET',
-    //     async: false
-    // });
-
-    // jqxhr.done((response)=> {
-    //     if(response.startsWith("move")){
-    //         // pick a randome move
-    //         console.warn("selecting a one - from chessdb");
-    //         // let index = Math.floor(Math.random()*moves.length);
-    //         console.log(response);
-    //         aiMove = convertUciToArray(response.substring(5,9));
-
-
-    //     }else{
-    //         console.warn("no moves from chessdb")
-    //         let [selectPiece, selectedSquare] = miniMaxCaller(board);
-    //         aiMove =  [[selectPiece.column, selectPiece.row], selectedSquare];
-    //     }
-  
-    // });
-    // jqxhr.fail(()=> {
-    //     console.warn("chessdb query failed");
-    //     let [selectPiece, selectedSquare] = miniMaxCaller(board);
-    //     aiMove = [[selectPiece.column, selectPiece.row], selectedSquare];
-    // });
-
-    // return aiMove;
 
     let [selectPiece, selectedSquare] = miniMaxCaller(board);
         
@@ -87,6 +52,8 @@ function miniMaxCaller(board) {
 
             let sqr = attSqrs[i];
 
+            
+
             let removedPiece = board.squares[sqr[0]][sqr[1]];
             if(removedPiece){
                 if(removedPiece === board.blackKing) return 10000;
@@ -100,7 +67,6 @@ function miniMaxCaller(board) {
             piece.column = sqr[0];
             piece.row = sqr[1];
 
-            // console.log("before minimax:", board.squares);
 
             let hVal = miniMax2(1,-Infinity, +Infinity, true, board);
 
@@ -119,6 +85,7 @@ function miniMaxCaller(board) {
             piece.column = pieceCords[0];
             piece.row = pieceCords[1];
 
+            
 
             if(removedPiece){
                 board.whitePieces.push(removedPiece);
@@ -130,13 +97,11 @@ function miniMaxCaller(board) {
 }
 
 export function miniMax2(depth,alpha, beta, maxPlayer, board) {
-    if(depth===maxDepth){
-        // console.log("calling h value calculator for the",maxPlayer?"white":"black", "player at depth", depth);
+    if(depth===maxDepth+1){
         return heuristicValue(board);
     }
 
     let pieces = maxPlayer ? board.whitePieces : board.blackPieces;
-    // let oppPieces = !maxPlayer ? board.blackPieces : board.whitePieces;
     let value = maxPlayer ? -Infinity : Infinity;
 
     if(maxPlayer){
@@ -150,9 +115,16 @@ export function miniMax2(depth,alpha, beta, maxPlayer, board) {
                 let sqr = attSqrs[i];
 
                 let removedPiece = board.squares[sqr[0]][sqr[1]];
+                // console.log("checking for black king capture at depth=", depth, "max depth=", maxDepth);
                 if(removedPiece){
-                    if(removedPiece === board.blackKing) return 10000-1*depth;
-                    if(removedPiece === board.whiteKing) return -10000+1*depth;
+                    if(removedPiece === board.blackKing) {
+                        // console.log("king captured");
+                        return 10000-1*depth;
+                    } 
+                    if(removedPiece === board.whiteKing){
+                        // console.log("king captured");
+                        return -10000+1*depth;
+                    } 
                     let index = board.blackPieces.indexOf(removedPiece);
                     board.blackPieces.splice(index,1);
 
@@ -196,10 +168,17 @@ export function miniMax2(depth,alpha, beta, maxPlayer, board) {
             for (let i = 0; i < attSqrs.length; i++) {
                 let sqr = attSqrs[i];
 
+                // console.log("checking for white king capture at depth=", depth, "max depth=", maxDepth);
                 let removedPiece = board.squares[sqr[0]][sqr[1]];
                 if(removedPiece){
-                    if(removedPiece === board.blackKing) return 10000-1*depth;
-                    if(removedPiece === board.whiteKing) return -10000+1*depth;
+                    if(removedPiece === board.blackKing) {
+                        // console.log("king captured");
+                        return 10000-1*depth;
+                    } 
+                    if(removedPiece === board.whiteKing){
+                        // console.log("king captured");
+                        return -10000+1*depth;
+                    } 
                     let index = board.whitePieces.indexOf(removedPiece);
                     board.whitePieces.splice(index,1);
                 }

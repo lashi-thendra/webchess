@@ -170,7 +170,7 @@ $('#board').on('mousedown','.square',(eventData)=>{
 
 $("#settings").on("click",()=>{
     maxDepth++;
-    if(maxDepth === 6) maxDepth = 2;
+    if(maxDepth === 5) maxDepth = 2;
     $('#settings > span').text(maxDepth);
 })
 

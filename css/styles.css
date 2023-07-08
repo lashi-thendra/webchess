@@ -100,7 +100,6 @@ footer{
     cursor: pointer;
 }
 
-#settings:hover,
 #settings:active{
     color: rgb(51, 134, 230);
 }

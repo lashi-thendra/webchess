@@ -233,6 +233,7 @@ function movePiece(coordinates){
 
     console.log("starting to evaluate AI move...");
     // displayElm.text("AI is calculating the move......");
+    $("#spinner").css("visibility","visible");
 
     setTimeout(()=>{
         let aiCordsAndPiece = getAiMove(board);
@@ -271,6 +272,8 @@ function getCoordinatesFromPiece(piece){
 
 function moveAiMove(aiSelectedCords, aiSelectedSquare){
     let validationMessage = board.movePiece( aiSelectedCords, aiSelectedSquare);
+    $("#spinner").css("visibility","hidden");
+   
 
     actionForValidation(validationMessage);
     setTimeout(()=>playSound(validationMessage),1);
@@ -350,6 +353,7 @@ function actionForValidation(validationMessage){
 function displayText(validationMessage){
     let text;
     let index = Math.floor(Math.random()*10);
+    
     switch (validationMessage){
         case SIMPLE_MOVE:
             if(!humansTurn){
